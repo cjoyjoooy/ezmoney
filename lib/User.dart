@@ -22,7 +22,7 @@ class Users {
   });
 
   static Users fromJson(Map<String, dynamic> json) => Users(
-        id: json['ID'],
+        id: json['id'],
         firstname: json['First Name'],
         lastname: json['Last Name'],
         birthdate: json['Birthdate'],
@@ -34,7 +34,7 @@ class Users {
       );
 
   Map<String, dynamic> toJson() => {
-        'ID': id,
+        'id': id,
         'First Name': firstname,
         'Last Name': lastname,
         'Birthdate': birthdate,

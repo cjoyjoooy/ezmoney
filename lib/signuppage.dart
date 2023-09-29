@@ -1,7 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import '/signinpage.dart';
-import '/user.dart';
+import 'package:ezmoney/User.dart';
+import 'package:ezmoney/authenticator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import '/signinpage.dart';
 import 'package:flutter/material.dart';
 
 class SignUp extends StatefulWidget {
@@ -12,19 +13,6 @@ class SignUp extends StatefulWidget {
 }
 
 class _SignUpState extends State<SignUp> {
-  TextEditingController fnameController = TextEditingController();
-  TextEditingController lnameController = TextEditingController();
-  TextEditingController birthdateController = TextEditingController();
-  TextEditingController genderController = TextEditingController();
-  TextEditingController addressController = TextEditingController();
-  TextEditingController phoneNumberController = TextEditingController();
-  TextEditingController emailController = TextEditingController();
-  TextEditingController usernameController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
-  TextEditingController confirmPasswordController = TextEditingController();
-  late String errormessage;
-  late bool isError;
-
   primaryColor(double opacityVal) => Color.fromRGBO(20, 18, 28, opacityVal);
   secondaryColor(double opacityVal) =>
       Color.fromRGBO(250, 250, 250, opacityVal);
@@ -145,6 +133,20 @@ class _SignUpState extends State<SignUp> {
     }
   }
 
+  TextEditingController fnameController = TextEditingController();
+  TextEditingController lnameController = TextEditingController();
+  TextEditingController birthdateController = TextEditingController();
+  TextEditingController genderController = TextEditingController();
+  TextEditingController addressController = TextEditingController();
+  TextEditingController phoneNumberController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController usernameController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+  TextEditingController confirmPasswordController = TextEditingController();
+
+  late String errormessage;
+  late bool isError;
+
   final _genderList = ['', 'Male', 'Female', 'Others'];
   String? _selectedGender;
 
@@ -159,96 +161,41 @@ class _SignUpState extends State<SignUp> {
     _selectedGender = _genderList[0];
   }
 
-  /*Future createUser() async {
-    final docUser = FirebaseFirestore.instance.collection('User').doc(id);
-    final newUser = User(
-      id: docUser.id,
-      firstname: fnameController.text,
-      lastname: lnameController.text,
-      birthdate: birthdateController.text,
-      gender: genderController.text,
-      address: addressController.text,
-      phoneNumber: phoneNumberController.text,
-      email: emailController.text,
-      username: usernameController.text,
-    );
-
-    final json = newUser.toJson();
-    await docUser.set(json);
-
-    setState(() {
-      fnameController.text = "";
-      lnameController.text = "";
-      birthdateController.text = "";
-      genderController.text = "";
-      addressController.text = "";
-      phoneNumberController.text = "";
-      emailController.text = "";
-      usernameController.text = "";
-      Navigator.pop(context);
-    });
-  } */
-
-  Future createUser() async {
-    final userGet = FirebaseAuth.instance.currentUser!;
-    final userid = userGet.uid;
-    final docUser = FirebaseFirestore.instance.collection('User').doc(userid);
-
-    final newUser = Users(
-      id: userid,
-      firstname: fnameController.text,
-      lastname: lnameController.text,
-      birthdate: birthdateController.text,
-      gender: _selectedGender!,
-      address: addressController.text,
-      phoneNumber: phoneNumberController.text,
-      email: emailController.text,
-      username: usernameController.text,
-    );
-
-    // Convert the User object to a Map using toJson
-    final json = newUser.toJson();
-
-    // Set the data in Firestore
-    await docUser.set(json);
-    setState(() {
-      fnameController.text = "";
-      lnameController.text = "";
-      birthdateController.text = "";
-      genderController.text = "";
-      addressController.text = "";
-      phoneNumberController.text = "";
-      emailController.text = "";
-      usernameController.text = "";
-      Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (context) => const SignIn(),
-        ),
-      );
-    });
-  }
-
-  Future registerUser() async {
-    try {
+  Future signUpUser() async {
+    if (passwordController.text == confirmPasswordController.text) {
       await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: emailController.text.trim(),
         password: passwordController.text.trim(),
       );
-      createUser();
-      goToSignin();
-      setState(() {
-        errormessage = "";
-      });
-    } on FirebaseAuthException catch (e) {
-      print(e);
-      errormessage = e.message.toString();
+      addUserData();
     }
   }
 
-  goToSignin() {
+  Future addUserData() async {
+    final user = FirebaseAuth.instance.currentUser!;
+    final userid = user.uid;
+    final docUser = FirebaseFirestore.instance.collection('User').doc(userid);
+    final newUser = Users(
+      id: userid,
+      firstname: fnameController.text.trim(),
+      lastname: lnameController.text.trim(),
+      birthdate: birthdateController.text.trim(),
+      gender: _selectedGender!,
+      address: addressController.text.trim(),
+      phoneNumber: phoneNumberController.text.trim(),
+      email: emailController.text.trim(),
+      username: usernameController.text.trim(),
+    );
+
+    final json = newUser.toJson();
+    await docUser.set(json);
+    goToAuthenticator();
+  }
+
+  goToAuthenticator() {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) => const SignIn(),
+        builder: (context) => Authenticator(),
       ),
     );
   }
@@ -356,6 +303,7 @@ class _SignUpState extends State<SignUp> {
                   height: 5,
                 ),
                 TextField(
+                  controller: passwordController,
                   obscureText: _isObscured,
                   style: fontDefault(secondaryColor(.9), FontWeight.w500),
                   decoration: txtFieldStyle2(
@@ -383,6 +331,7 @@ class _SignUpState extends State<SignUp> {
                   height: 5,
                 ),
                 TextField(
+                  controller: confirmPasswordController,
                   obscureText: _isCPassObscured,
                   style: fontDefault(secondaryColor(.9), FontWeight.w500),
                   decoration: txtFieldStyle2(
@@ -412,7 +361,7 @@ class _SignUpState extends State<SignUp> {
                 ElevatedButton(
                   style: btnStyle(accentColor(1), primaryColor(1)),
                   onPressed: () {
-                    registerUser();
+                    signUpUser();
                   },
                   child: const Text(
                     "Sign Up",
