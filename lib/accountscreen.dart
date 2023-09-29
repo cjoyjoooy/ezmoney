@@ -53,141 +53,168 @@ class _AccountScreenState extends State<AccountScreen> {
         ),
       );
 
-  Widget accountProfile() => Container(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-        child: ListView(
-          children: [
-            Column(
-              children: [
-                const Icon(
-                  Icons.account_circle_outlined,
-                  size: 85,
-                  color: Color.fromRGBO(250, 250, 250, 1),
-                ),
-                Text(
-                  'Lex Vincent Jyff Lao',
-                  style: fontDefault(
-                    secondaryColor(1),
-                    FontWeight.bold,
+  Widget accountProfile(User? user) {
+    return StreamBuilder<DocumentSnapshot>(
+      stream: FirebaseFirestore.instance
+          .collection('User')
+          .doc(user?.uid)
+          .snapshots(),
+      builder:
+          (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+        if (snapshot.hasError) {
+          return Text("Error: ${snapshot.error}");
+        }
+
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return CircularProgressIndicator(); // Show a loading indicator while data is being fetched.
+        }
+
+        if (!snapshot.hasData || !snapshot.data!.exists) {
+          return Text(
+              "User not found"); // Handle the case where the user document does not exist.
+        }
+
+        var userData = snapshot.data!.data() as Map<String, dynamic>;
+
+        return Container(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+          child: ListView(
+            // ...
+            children: [
+              Column(
+                children: [
+                  const Icon(
+                    Icons.account_circle_outlined,
+                    size: 85,
+                    color: Color.fromRGBO(250, 250, 250, 1),
                   ),
-                ),
-              ],
-            ),
-            const SizedBox(
-              height: 25,
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Birthdate',
-                  style: fontSecondary(secondaryColor(.4), FontWeight.w500),
-                ),
-                Text(
-                  'September 30, 2001',
-                  style: fontDefault(secondaryColor(1), FontWeight.bold),
-                ),
-              ],
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Gender',
-                  style: fontSecondary(secondaryColor(.4), FontWeight.w500),
-                ),
-                Text(
-                  'Male',
-                  style: fontDefault(secondaryColor(1), FontWeight.bold),
-                ),
-              ],
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Address',
-                  style: fontSecondary(secondaryColor(.4), FontWeight.w500),
-                ),
-                Text(
-                  'Tandag, Surigao del Sur',
-                  style: fontDefault(secondaryColor(1), FontWeight.bold),
-                ),
-              ],
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Email',
-                  style: fontSecondary(secondaryColor(.4), FontWeight.w500),
-                ),
-                Text(
-                  'L.Lao.52484@umindanao.edu.ph',
-                  style: fontDefault(secondaryColor(1), FontWeight.bold),
-                ),
-              ],
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Phone Number',
-                  style: fontSecondary(secondaryColor(.4), FontWeight.w500),
-                ),
-                Text(
-                  '0912387645',
-                  style: fontDefault(secondaryColor(1), FontWeight.bold),
-                ),
-              ],
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Username',
-                  style: fontSecondary(secondaryColor(.4), FontWeight.w500),
-                ),
-                Text(
-                  'Lexu69420',
-                  style: fontDefault(secondaryColor(1), FontWeight.bold),
-                ),
-              ],
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Password',
-                  style: fontSecondary(secondaryColor(.4), FontWeight.w500),
-                ),
-                Text(
-                  '************',
-                  style: fontDefault(secondaryColor(1), FontWeight.bold),
-                ),
-              ],
-            ),
-          ],
-        ),
-      );
+                  Text(
+                    '${userData['First Name']} ${userData['Last Name']}',
+                    style: fontDefault(
+                      secondaryColor(1),
+                      FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(
+                height: 25,
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Birthdate',
+                    style: fontSecondary(secondaryColor(.4), FontWeight.w500),
+                  ),
+                  Text(
+                    '${userData['Birthdate']}',
+                    style: fontDefault(secondaryColor(1), FontWeight.bold),
+                  ),
+                ],
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Gender',
+                    style: fontSecondary(secondaryColor(.4), FontWeight.w500),
+                  ),
+                  Text(
+                    '${userData['Gender']}',
+                    style: fontDefault(secondaryColor(1), FontWeight.bold),
+                  ),
+                ],
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Address',
+                    style: fontSecondary(secondaryColor(.4), FontWeight.w500),
+                  ),
+                  Text(
+                    '${userData['Address']}',
+                    style: fontDefault(secondaryColor(1), FontWeight.bold),
+                  ),
+                ],
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Email',
+                    style: fontSecondary(secondaryColor(.4), FontWeight.w500),
+                  ),
+                  Text(
+                    '${userData['Email']}',
+                    style: fontDefault(secondaryColor(1), FontWeight.bold),
+                  ),
+                ],
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Phone Number',
+                    style: fontSecondary(secondaryColor(.4), FontWeight.w500),
+                  ),
+                  Text(
+                    '${userData['Phone Number']}',
+                    style: fontDefault(secondaryColor(1), FontWeight.bold),
+                  ),
+                ],
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Username',
+                    style: fontSecondary(secondaryColor(.4), FontWeight.w500),
+                  ),
+                  Text(
+                    '${userData['Birthdate']}',
+                    style: fontDefault(secondaryColor(1), FontWeight.bold),
+                  ),
+                ],
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Password',
+                    style: fontSecondary(secondaryColor(.4), FontWeight.w500),
+                  ),
+                  Text(
+                    '************',
+                    style: fontDefault(secondaryColor(1), FontWeight.bold),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
 
   Future deleteUser(String id) async {
     final docUser = FirebaseFirestore.instance.collection('User').doc(id);
@@ -196,12 +223,14 @@ class _AccountScreenState extends State<AccountScreen> {
 
   @override
   Widget build(BuildContext context) {
+    User? user = FirebaseAuth.instance.currentUser;
+
     return Theme(
       data: Theme.of(context).copyWith(
         dividerTheme: const DividerThemeData(
-            space: 0.0,
-            color: Colors.transparent // Set the divider height to 0.0
-            ),
+          space: 0.0,
+          color: Colors.transparent,
+        ),
       ),
       child: Scaffold(
         backgroundColor: primaryColor(1),
@@ -219,18 +248,19 @@ class _AccountScreenState extends State<AccountScreen> {
             Container(
               padding: const EdgeInsets.only(right: 10),
               child: IconButton(
-                  onPressed: () {
-                    FirebaseAuth.instance.signOut();
-                  },
-                  icon: Icon(
-                    Icons.logout,
-                    size: 32,
-                    color: secondaryColor(1),
-                  )),
+                onPressed: () {
+                  FirebaseAuth.instance.signOut();
+                },
+                icon: Icon(
+                  Icons.logout,
+                  size: 32,
+                  color: secondaryColor(1),
+                ),
+              ),
             )
           ],
         ),
-        body: accountProfile(),
+        body: accountProfile(user),
         persistentFooterButtons: <Widget>[
           Container(
             margin: const EdgeInsets.only(left: 10, right: 10),
@@ -261,21 +291,21 @@ class _AccountScreenState extends State<AccountScreen> {
                       context: context,
                       builder: (BuildContext context) {
                         return AlertDialog(
-                          title: Text('Delete Account'),
-                          content: Text(
+                          title: const Text('Delete Account'),
+                          content: const Text(
                               'Are you sure you want to delete your account? This action cannot be undone.'),
                           actions: <Widget>[
                             TextButton(
                               onPressed: () {
                                 Navigator.of(context).pop(false); // Cancel
                               },
-                              child: Text('Cancel'),
+                              child: const Text('Cancel'),
                             ),
                             TextButton(
                               onPressed: () {
                                 Navigator.of(context).pop(true); // Confirm
                               },
-                              child: Text('Delete'),
+                              child: const Text('Delete'),
                             ),
                           ],
                         );

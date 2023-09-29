@@ -1,9 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 import '/banktransferpage.dart';
 import '/billspage.dart';
 import '/buyloadpage.dart';
 import '/cashinpage.dart';
 import '/sendmoneypage.dart';
-import '/transaction.dart';
+import 'transaction.dart' as CustomTransaction;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -48,67 +50,116 @@ class _HomeState extends State<HomeScreen> {
         letterSpacing: 1.1,
       );
 
-  Widget totalBalance(balance) => Container(
-        margin: const EdgeInsets.only(top: 10),
-        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-        width: double.infinity,
-        decoration: BoxDecoration(
-          color: tertiaryColor(1),
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: Row(
-          children: [
-            Container(
-              width: 200,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Total Balance",
-                    style: fontDefault(secondaryColor(.4), FontWeight.w500),
-                  ),
-                  Text(
-                    overflow: TextOverflow.ellipsis,
-                    softWrap: false,
-                    maxLines: 1,
-                    "\$$balance",
-                    style: fontTertiary(secondaryColor(1), FontWeight.bold),
-                  ),
-                ],
-              ),
+  Future<num> fetchUserBalance(String uid) async {
+    try {
+      final userDoc =
+          await FirebaseFirestore.instance.collection('User').doc(uid).get();
+      if (userDoc.exists) {
+        final userData = userDoc.data() as Map<String, dynamic>;
+        final balance = userData['Balance'] as num; // Cast as num
+        print('Balance Retrieved: $balance');
+        return balance;
+      } else {
+        print('User document does not exist.');
+        return 0; // Return a default value if the user document doesn't exist
+      }
+    } catch (e) {
+      print('Error fetching user balance: $e');
+      return 0; // Handle error gracefully
+    }
+  }
+
+  Future<String> fetchUsername(String uid) async {
+    try {
+      final userDoc =
+          await FirebaseFirestore.instance.collection('User').doc(uid).get();
+      if (userDoc.exists) {
+        final userData = userDoc.data() as Map<String, dynamic>;
+        final username = userData['Username'] as String;
+        return username;
+      } else {
+        return 'Unknown'; // Return a default value if the document doesn't exist
+      }
+    } catch (e) {
+      print('Error fetching username: $e');
+      return 'Unknown'; // Handle error gracefully
+    }
+  }
+
+  Widget totalBalance() {
+    return FutureBuilder<num>(
+      // Change FutureBuilder to use num
+      future: fetchUserBalance(user.uid),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return CircularProgressIndicator(); // Show a loading indicator while fetching data
+        } else if (snapshot.hasError) {
+          return Text('Error: ${snapshot.error}');
+        } else {
+          final balance = snapshot.data ??
+              0.0; // Use the retrieved balance or a default value
+          final formattedBalance = balance.toStringAsFixed(
+              2); // Format the balance as a string with 2 decimal places
+          return Container(
+            margin: const EdgeInsets.only(top: 10),
+            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+            width: double.infinity,
+            decoration: BoxDecoration(
+              color: tertiaryColor(1),
+              borderRadius: BorderRadius.circular(10),
             ),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  ElevatedButton.icon(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: accentColor(1),
-                      foregroundColor: secondaryColor(1),
-                      textStyle: const TextStyle(
-                          fontSize: 14, fontWeight: FontWeight.bold),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
+            child: Row(
+              children: [
+                Container(
+                  width: 200,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Total Balance",
+                        style: fontDefault(secondaryColor(.4), FontWeight.w500),
                       ),
-                    ),
-                    onPressed: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => const CashIn(),
+                      Text(
+                        '\$$formattedBalance',
+                        style: fontTertiary(secondaryColor(1), FontWeight.bold),
+                      ),
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      ElevatedButton.icon(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: accentColor(1),
+                          foregroundColor: secondaryColor(1),
+                          textStyle: const TextStyle(
+                              fontSize: 14, fontWeight: FontWeight.bold),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
                         ),
-                      );
-                    },
-                    icon: const Icon(Icons.add),
-                    label: const Text(
-                      'Cash In',
-                    ),
-                  )
-                ],
-              ),
-            )
-          ],
-        ),
-      );
+                        onPressed: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => const CashIn(),
+                            ),
+                          );
+                        },
+                        icon: const Icon(Icons.add),
+                        label: const Text('Cash In'),
+                      )
+                    ],
+                  ),
+                )
+              ],
+            ),
+          );
+        }
+      },
+    );
+  }
 
   Widget servicesIcon(iconVal, serviceLabel) => Column(
         children: [
@@ -238,9 +289,22 @@ class _HomeState extends State<HomeScreen> {
                   'Hello,',
                   style: fontSecondary(secondaryColor(.6), FontWeight.w500),
                 ),
-                Text(
-                  user.email!,
-                  style: fontDefault(secondaryColor(1), FontWeight.bold),
+                FutureBuilder<String>(
+                  future: fetchUsername(user.uid),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Text(
+                          'Loading...'); // Show loading indicator while fetching data
+                    } else if (snapshot.hasError) {
+                      return Text('Error: ${snapshot.error}');
+                    } else {
+                      final username = snapshot.data ?? 'Unknown';
+                      return Text(
+                        username,
+                        style: fontDefault(secondaryColor(1), FontWeight.bold),
+                      );
+                    }
+                  },
                 ),
               ],
             ),
@@ -253,7 +317,7 @@ class _HomeState extends State<HomeScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            totalBalance("15,483.00"),
+            totalBalance(),
             const SizedBox(
               height: 20,
             ),
@@ -282,7 +346,8 @@ class _HomeState extends State<HomeScreen> {
                           onTap: () {
                             Navigator.of(context).push(
                               MaterialPageRoute(
-                                builder: (context) => Transaction(),
+                                builder: (context) => CustomTransaction
+                                    .Transaction(), // Use the Transaction widget
                               ),
                             );
                           },
