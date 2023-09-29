@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:ezmoney/startpage.dart';
 import '/profileedit.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -254,15 +255,70 @@ class _AccountScreenState extends State<AccountScreen> {
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.transparent),
-                  onPressed: () {},
+                  onPressed: () async {
+                    // Show a confirmation dialog
+                    bool confirmDelete = await showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: Text('Delete Account'),
+                          content: Text(
+                              'Are you sure you want to delete your account? This action cannot be undone.'),
+                          actions: <Widget>[
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pop(false); // Cancel
+                              },
+                              child: Text('Cancel'),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pop(true); // Confirm
+                              },
+                              child: Text('Delete'),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+
+                    // If the user confirms the deletion, delete the account and data
+                    if (confirmDelete == true) {
+                      try {
+                        // Get the currently signed-in user
+                        User? user = FirebaseAuth.instance.currentUser;
+
+                        // Delete the user document in Firestore
+                        if (user != null) {
+                          await FirebaseFirestore.instance
+                              .collection('User')
+                              .doc(user.uid)
+                              .delete();
+                        }
+
+                        // Delete the user account
+                        await user?.delete();
+
+                        // Sign out the user
+                        await FirebaseAuth.instance.signOut();
+
+                        // Navigate to a screen after deletion (e.g., sign-in or home)
+                        // Replace this with your desired destination.
+                        Navigator.of(context).pushReplacement(
+                          MaterialPageRoute(
+                            builder: (context) => StartPage(),
+                          ),
+                        );
+                      } catch (e) {
+                        print('Error deleting account: $e');
+                        // Handle error, show a snackbar, or display an error message to the user.
+                      }
+                    }
+                  },
                   child: Text(
-                    textAlign: TextAlign.center,
                     'Delete Account',
                     style: fontTertiary(deleteColor(1), FontWeight.bold),
                   ),
-                ),
-                const SizedBox(
-                  height: 10,
                 ),
               ],
             ),
