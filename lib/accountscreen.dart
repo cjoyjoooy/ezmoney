@@ -52,6 +52,142 @@ class _AccountScreenState extends State<AccountScreen> {
         ),
       );
 
+  Widget accountProfile() => Container(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+        child: ListView(
+          children: [
+            Column(
+              children: [
+                const Icon(
+                  Icons.account_circle_outlined,
+                  size: 85,
+                  color: Color.fromRGBO(250, 250, 250, 1),
+                ),
+                Text(
+                  'Lex Vincent Jyff Lao',
+                  style: fontDefault(
+                    secondaryColor(1),
+                    FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(
+              height: 25,
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Birthdate',
+                  style: fontSecondary(secondaryColor(.4), FontWeight.w500),
+                ),
+                Text(
+                  'September 30, 2001',
+                  style: fontDefault(secondaryColor(1), FontWeight.bold),
+                ),
+              ],
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Gender',
+                  style: fontSecondary(secondaryColor(.4), FontWeight.w500),
+                ),
+                Text(
+                  'Male',
+                  style: fontDefault(secondaryColor(1), FontWeight.bold),
+                ),
+              ],
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Address',
+                  style: fontSecondary(secondaryColor(.4), FontWeight.w500),
+                ),
+                Text(
+                  'Tandag, Surigao del Sur',
+                  style: fontDefault(secondaryColor(1), FontWeight.bold),
+                ),
+              ],
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Email',
+                  style: fontSecondary(secondaryColor(.4), FontWeight.w500),
+                ),
+                Text(
+                  'L.Lao.52484@umindanao.edu.ph',
+                  style: fontDefault(secondaryColor(1), FontWeight.bold),
+                ),
+              ],
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Phone Number',
+                  style: fontSecondary(secondaryColor(.4), FontWeight.w500),
+                ),
+                Text(
+                  '0912387645',
+                  style: fontDefault(secondaryColor(1), FontWeight.bold),
+                ),
+              ],
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Username',
+                  style: fontSecondary(secondaryColor(.4), FontWeight.w500),
+                ),
+                Text(
+                  'Lexu69420',
+                  style: fontDefault(secondaryColor(1), FontWeight.bold),
+                ),
+              ],
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Password',
+                  style: fontSecondary(secondaryColor(.4), FontWeight.w500),
+                ),
+                Text(
+                  '************',
+                  style: fontDefault(secondaryColor(1), FontWeight.bold),
+                ),
+              ],
+            ),
+          ],
+        ),
+      );
+
   Future deleteUser(String id) async {
     final docUser = FirebaseFirestore.instance.collection('User').doc(id);
     docUser.delete();
@@ -93,141 +229,7 @@ class _AccountScreenState extends State<AccountScreen> {
             )
           ],
         ),
-        body: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-          child: ListView(
-            children: [
-              Column(
-                children: [
-                  const Icon(
-                    Icons.account_circle_outlined,
-                    size: 85,
-                    color: Color.fromRGBO(250, 250, 250, 1),
-                  ),
-                  Text(
-                    'Lex Vincent Jyff Lao',
-                    style: fontDefault(
-                      secondaryColor(1),
-                      FontWeight.bold,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(
-                height: 25,
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Birthdate',
-                    style: fontSecondary(secondaryColor(.4), FontWeight.w500),
-                  ),
-                  Text(
-                    'September 30, 2001',
-                    style: fontDefault(secondaryColor(1), FontWeight.bold),
-                  ),
-                ],
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Gender',
-                    style: fontSecondary(secondaryColor(.4), FontWeight.w500),
-                  ),
-                  Text(
-                    'Male',
-                    style: fontDefault(secondaryColor(1), FontWeight.bold),
-                  ),
-                ],
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Address',
-                    style: fontSecondary(secondaryColor(.4), FontWeight.w500),
-                  ),
-                  Text(
-                    'Tandag, Surigao del Sur',
-                    style: fontDefault(secondaryColor(1), FontWeight.bold),
-                  ),
-                ],
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Email',
-                    style: fontSecondary(secondaryColor(.4), FontWeight.w500),
-                  ),
-                  Text(
-                    'L.Lao.52484@umindanao.edu.ph',
-                    style: fontDefault(secondaryColor(1), FontWeight.bold),
-                  ),
-                ],
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Phone Number',
-                    style: fontSecondary(secondaryColor(.4), FontWeight.w500),
-                  ),
-                  Text(
-                    '0912387645',
-                    style: fontDefault(secondaryColor(1), FontWeight.bold),
-                  ),
-                ],
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Username',
-                    style: fontSecondary(secondaryColor(.4), FontWeight.w500),
-                  ),
-                  Text(
-                    'Lexu69420',
-                    style: fontDefault(secondaryColor(1), FontWeight.bold),
-                  ),
-                ],
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Password',
-                    style: fontSecondary(secondaryColor(.4), FontWeight.w500),
-                  ),
-                  Text(
-                    '************',
-                    style: fontDefault(secondaryColor(1), FontWeight.bold),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
+        body: accountProfile(),
         persistentFooterButtons: <Widget>[
           Container(
             margin: const EdgeInsets.only(left: 10, right: 10),
@@ -250,6 +252,8 @@ class _AccountScreenState extends State<AccountScreen> {
                   height: 5,
                 ),
                 ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.transparent),
                   onPressed: () {},
                   child: Text(
                     textAlign: TextAlign.center,
