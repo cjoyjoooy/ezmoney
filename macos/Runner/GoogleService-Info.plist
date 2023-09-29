@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>API_KEY</key>
+	<string>AIzaSyBUB708aX45_YShaqj6_hv8IrUaGFSe_ic</string>
+	<key>GCM_SENDER_ID</key>
+	<string>466818250020</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.example.ezmoney.RunnerTests</string>
+	<key>PROJECT_ID</key>
+	<string>ezmoneymobilebank</string>
+	<key>STORAGE_BUCKET</key>
+	<string>ezmoneymobilebank.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:466818250020:ios:97e006fdfbed885f366fb1</string>
+</dict>
+</plist>

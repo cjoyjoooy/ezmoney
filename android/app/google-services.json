@@ -1,0 +1,67 @@
+{
+  "project_info": {
+    "project_number": "466818250020",
+    "project_id": "ezmoneymobilebank",
+    "storage_bucket": "ezmoneymobilebank.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:466818250020:android:2e77e09e56ee622f366fb1",
+        "android_client_info": {
+          "package_name": "com.example.ezmoney"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBV4sF1d031vVI_DedMyDVEawXJ5xFv94s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:466818250020:android:dffb3c049469749b366fb1",
+        "android_client_info": {
+          "package_name": "com.example.ezmoney_mobile_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBV4sF1d031vVI_DedMyDVEawXJ5xFv94s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:466818250020:android:bc4ad7e3c08d7f67366fb1",
+        "android_client_info": {
+          "package_name": "com.example.ezmoney_mobile_app1"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBV4sF1d031vVI_DedMyDVEawXJ5xFv94s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

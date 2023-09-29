@@ -1,0 +1,332 @@
+import '/banktransferpage.dart';
+import '/billspage.dart';
+import '/buyloadpage.dart';
+import '/cashinpage.dart';
+import '/sendmoneypage.dart';
+import '/transaction.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeState();
+}
+
+class _HomeState extends State<HomeScreen> {
+  final user = FirebaseAuth.instance.currentUser!;
+
+  primaryColor(double opacityVal) => Color.fromRGBO(20, 18, 28, opacityVal);
+  secondaryColor(double opacityVal) =>
+      Color.fromRGBO(250, 250, 250, opacityVal);
+  accentColor(double opacityVal) => Color.fromRGBO(155, 128, 231, opacityVal);
+  tertiaryColor(double opacityVal) => Color.fromRGBO(34, 33, 46, opacityVal);
+
+  fontHeader(colorVal, weightVal) => TextStyle(
+        fontSize: 38,
+        color: colorVal,
+        fontWeight: weightVal,
+        letterSpacing: 1.1,
+      );
+
+  fontDefault(colorVal, weightVal) => TextStyle(
+        fontSize: 18,
+        color: colorVal,
+        fontWeight: weightVal,
+        letterSpacing: 1.1,
+      );
+  fontSecondary(colorVal, weightVal) => TextStyle(
+        fontSize: 16,
+        color: colorVal,
+        letterSpacing: 1.1,
+      );
+  fontTertiary(colorVal, weightVal) => TextStyle(
+        fontSize: 32,
+        color: colorVal,
+        fontWeight: weightVal,
+        letterSpacing: 1.1,
+      );
+
+  Widget totalBalance(balance) => Container(
+        margin: const EdgeInsets.only(top: 10),
+        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+        width: double.infinity,
+        decoration: BoxDecoration(
+          color: tertiaryColor(1),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 200,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Total Balance",
+                    style: fontDefault(secondaryColor(.4), FontWeight.w500),
+                  ),
+                  Text(
+                    overflow: TextOverflow.ellipsis,
+                    softWrap: false,
+                    maxLines: 1,
+                    "\$$balance",
+                    style: fontTertiary(secondaryColor(1), FontWeight.bold),
+                  ),
+                ],
+              ),
+            ),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  ElevatedButton.icon(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: accentColor(1),
+                      foregroundColor: secondaryColor(1),
+                      textStyle: const TextStyle(
+                          fontSize: 14, fontWeight: FontWeight.bold),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => const CashIn(),
+                        ),
+                      );
+                    },
+                    icon: const Icon(Icons.add),
+                    label: const Text(
+                      'Cash In',
+                    ),
+                  )
+                ],
+              ),
+            )
+          ],
+        ),
+      );
+
+  Widget servicesIcon(iconVal, serviceLabel) => Column(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: tertiaryColor(1),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Icon(
+              iconVal,
+              size: 38,
+              color: accentColor(1),
+            ),
+          ),
+          const SizedBox(
+            height: 5,
+          ),
+          Text(
+            serviceLabel,
+            style: fontSecondary(secondaryColor(1), FontWeight.w800),
+          ),
+        ],
+      );
+
+  appServices() => Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          GestureDetector(
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => const SendMoneyPage(),
+                ),
+              );
+            },
+            child: servicesIcon(Icons.swap_horiz_outlined, "Send"),
+          ),
+          GestureDetector(
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => const BankTransferPage(),
+                ),
+              );
+            },
+            child: servicesIcon(Icons.account_balance_outlined, "Transfer"),
+          ),
+          GestureDetector(
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => const Bills(),
+                ),
+              );
+            },
+            child: servicesIcon(Icons.receipt_long_outlined, "Bills"),
+          ),
+          GestureDetector(
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => const BuyLoadPage(),
+                ),
+              );
+            },
+            child: servicesIcon(Icons.phone_android_outlined, "Load"),
+          ),
+        ],
+      );
+
+  Widget transaction(type, date, name, amount) => Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                type,
+                style: fontSecondary(secondaryColor(.4), FontWeight.w500),
+              ),
+              Text(
+                date,
+                style: fontSecondary(secondaryColor(.4), FontWeight.w500),
+              ),
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                name,
+                style: fontDefault(secondaryColor(1), FontWeight.w500),
+              ),
+              Text(
+                '-\$$amount',
+                style: fontDefault(secondaryColor(1), FontWeight.w500),
+              ),
+            ],
+          ),
+          const SizedBox(
+            height: 12,
+          ),
+        ],
+      );
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        surfaceTintColor: primaryColor(1),
+        automaticallyImplyLeading: false,
+        backgroundColor: Colors.transparent,
+        title: Row(
+          children: [
+            Image.asset(
+              'images/EZLOGO 2.png',
+              height: 43,
+            ),
+            const SizedBox(
+              width: 10,
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Hello,',
+                  style: fontSecondary(secondaryColor(.6), FontWeight.w500),
+                ),
+                Text(
+                  user.email!,
+                  style: fontDefault(secondaryColor(1), FontWeight.bold),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+      backgroundColor: primaryColor(1),
+      body: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            totalBalance("15,483.00"),
+            const SizedBox(
+              height: 20,
+            ),
+            appServices(),
+            Expanded(
+              child: Container(
+                margin: const EdgeInsets.only(top: 20),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: tertiaryColor(1),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: ListView(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "Transactions",
+                          style:
+                              fontDefault(secondaryColor(1), FontWeight.bold),
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => Transaction(),
+                              ),
+                            );
+                          },
+                          child: Text(
+                            "See all",
+                            style: fontDefault(accentColor(1), FontWeight.bold),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    transaction(
+                        'Send money to', '03 Aug 2023', 'Feiah Macalde', 3600),
+                    transaction(
+                        'Send money to', '03 Aug 2023', 'Lex Vincent Lao', 500),
+                    transaction(
+                        'Send money to', '03 Aug 2023', 'Lex Vincent Lao', 500),
+                    transaction('Send money to', '15 Sep 2023',
+                        'Celeste Joy Vagilidad', 1500),
+                    transaction(
+                        'Send money to', '03 Aug 2023', 'Feiah Macalde', 3600),
+                    transaction(
+                        'Send money to', '03 Aug 2023', 'Lex Vincent Lao', 500),
+                    transaction(
+                        'Send money to', '03 Aug 2023', 'Lex Vincent Lao', 500),
+                    transaction('Send money to', '15 Sep 2023',
+                        'Celeste Joy Vagilidad', 1500),
+                    transaction(
+                        'Send money to', '03 Aug 2023', 'Feiah Macalde', 3600),
+                    transaction(
+                        'Send money to', '03 Aug 2023', 'Lex Vincent Lao', 500),
+                    transaction(
+                        'Send money to', '03 Aug 2023', 'Lex Vincent Lao', 500),
+                    transaction('Send money to', '15 Sep 2023',
+                        'Celeste Joy Vagilidad', 1500),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
