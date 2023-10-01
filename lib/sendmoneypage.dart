@@ -1,5 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
 import '/confirmtransactionpage.dart';
 import 'package:flutter/material.dart';
+
+import 'UserTransaction.dart';
 
 class SendMoneyPage extends StatefulWidget {
   const SendMoneyPage({
@@ -73,6 +78,53 @@ class _SendMoneyPageState extends State<SendMoneyPage> {
         labelText: label,
       );
 
+  TextEditingController nameController = TextEditingController();
+  TextEditingController amountController = TextEditingController();
+  TextEditingController messageController = TextEditingController();
+
+  Future createSend() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      final newCashin = UserTransaction(
+        email: user.email ?? 'Unknown',
+        transactiontype: 'Send Money',
+        bank: '',
+        accountnumber: '',
+        amount: double.tryParse(amountController.text) ?? 0.0,
+        network: '',
+        accountname: '',
+        date: DateTime.now(),
+      );
+
+      final json = newCashin.toJson();
+
+      try {
+        await FirebaseFirestore.instance
+            .collection('Transaction')
+            .doc() // Firestore will auto-generate a unique document ID
+            .set(json);
+      } catch (e) {
+        print('Error creating Cash In transaction: $e');
+        // Handle error gracefully
+      }
+    }
+  }
+
+  Future<void> updateBalance(double newBalance) async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      try {
+        await FirebaseFirestore.instance
+            .collection('User')
+            .doc(user.uid)
+            .update({'Balance': newBalance});
+      } catch (e) {
+        print('Error updating balance: $e');
+        // Handle error gracefully
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Theme(
@@ -121,6 +173,7 @@ class _SendMoneyPageState extends State<SendMoneyPage> {
                   TextField(
                     style: fontDefault(secondaryColor(1), FontWeight.w500),
                     decoration: txtFieldStyle("Recipient's Name"),
+                    controller: nameController,
                   ),
                   const SizedBox(
                     height: 5,
@@ -128,6 +181,7 @@ class _SendMoneyPageState extends State<SendMoneyPage> {
                   TextField(
                     style: fontDefault(secondaryColor(1), FontWeight.w500),
                     decoration: txtFieldStyle("Amount"),
+                    controller: amountController,
                   ),
                   const SizedBox(
                     height: 5,
@@ -135,6 +189,7 @@ class _SendMoneyPageState extends State<SendMoneyPage> {
                   TextField(
                     style: fontDefault(secondaryColor(1), FontWeight.w500),
                     decoration: txtFieldStyle("Message (optional)"),
+                    controller: messageController,
                   ),
                 ],
               ),
@@ -150,13 +205,43 @@ class _SendMoneyPageState extends State<SendMoneyPage> {
             child: ElevatedButton(
               style: btnStyle(accentColor(1), primaryColor(1)),
               onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => ConfirmTransactionPage(
-                      transactionType: "Send",
-                    ),
-                  ),
-                );
+                // Parse the amount entered in the TextField
+                final enteredAmount =
+                    double.tryParse(amountController.text) ?? 0.0;
+
+                // Retrieve the current balance from Firebase
+                final user = FirebaseAuth.instance.currentUser;
+                if (user != null) {
+                  FirebaseFirestore.instance
+                      .collection('User')
+                      .doc(user.uid)
+                      .get()
+                      .then((userDoc) {
+                    if (userDoc.exists) {
+                      final userData = userDoc.data() as Map<String, dynamic>;
+                      final currentBalance = userData['Balance'] as double;
+
+                      // Calculate the new balance
+                      final newBalance = currentBalance - enteredAmount;
+
+                      // Update the balance in Firebase
+                      createSend();
+                      updateBalance(newBalance);
+
+                      // Navigate to the confirmation page
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => ConfirmTransactionPage(
+                            transactionType: 'Cash In',
+                          ),
+                        ),
+                      );
+                    }
+                  }).catchError((error) {
+                    print('Error fetching user data: $error');
+                    // Handle error gracefully
+                  });
+                }
               },
               child: const Text(
                 "Next",

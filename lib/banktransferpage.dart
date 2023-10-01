@@ -1,5 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
 import '/confirmtransactionpage.dart';
 import 'package:flutter/material.dart';
+
+import 'UserTransaction.dart';
 
 class BankTransferPage extends StatefulWidget {
   const BankTransferPage({super.key});
@@ -86,6 +91,52 @@ class _BankTransferPageState extends State<BankTransferPage> {
         labelStyle: fontDefault(secondaryColor(.5), FontWeight.w400),
         labelText: label,
       );
+
+  TextEditingController accountnameController = TextEditingController();
+  TextEditingController accountnumberController = TextEditingController();
+  TextEditingController amountController = TextEditingController();
+
+  Future createTransfer() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null && _selectedBank != null) {
+      final newCashin = UserTransaction(
+        email: user.email ?? 'Unknown',
+        transactiontype: 'Bank Transfer',
+        bank: _selectedBank!,
+        accountnumber: accountnumberController.text,
+        amount: double.tryParse(amountController.text) ?? 0.0,
+        network: '',
+        accountname: accountnameController.text,
+        date: DateTime.now(),
+      );
+
+      final json = newCashin.toJson();
+
+      try {
+        await FirebaseFirestore.instance
+            .collection('Transaction')
+            .add(json); // Firestore will auto-generate a unique document ID
+      } catch (e) {
+        print('Error creating Bank Transfer transaction: $e');
+        // Handle error gracefully
+      }
+    }
+  }
+
+  Future<void> updateBalance(double newBalance) async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      try {
+        await FirebaseFirestore.instance
+            .collection('User')
+            .doc(user.uid)
+            .update({'Balance': newBalance});
+      } catch (e) {
+        print('Error updating balance: $e');
+        // Handle error gracefully
+      }
+    }
+  }
 
   final _bankList = [
     'Bank of the Philippine Islands',
@@ -177,6 +228,7 @@ class _BankTransferPageState extends State<BankTransferPage> {
                   TextField(
                     style: fontDefault(secondaryColor(1), FontWeight.w500),
                     decoration: txtFieldStyle("Account Name"),
+                    controller: accountnameController,
                   ),
                   const SizedBox(
                     height: 5,
@@ -184,6 +236,7 @@ class _BankTransferPageState extends State<BankTransferPage> {
                   TextField(
                     style: fontDefault(secondaryColor(1), FontWeight.w500),
                     decoration: txtFieldStyle("Account Number"),
+                    controller: accountnumberController,
                   ),
                   const SizedBox(
                     height: 5,
@@ -194,6 +247,7 @@ class _BankTransferPageState extends State<BankTransferPage> {
                   TextField(
                     style: fontDefault(secondaryColor(1), FontWeight.w500),
                     decoration: txtFieldStyle("Amount"),
+                    controller: amountController,
                   ),
                   const SizedBox(
                     height: 5,
@@ -230,12 +284,39 @@ class _BankTransferPageState extends State<BankTransferPage> {
             child: ElevatedButton(
               style: btnStyle(accentColor(1), primaryColor(1)),
               onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => ConfirmTransactionPage(
-                        transactionType: "Bank Transfer"),
-                  ),
-                );
+                final enteredAmount =
+                    double.tryParse(amountController.text) ?? 0.0;
+
+                // Retrieve the current balance from Firebase
+                final user = FirebaseAuth.instance.currentUser;
+                if (user != null) {
+                  FirebaseFirestore.instance
+                      .collection('User')
+                      .doc(user.uid)
+                      .get()
+                      .then((userDoc) {
+                    if (userDoc.exists) {
+                      final userData = userDoc.data() as Map<String, dynamic>;
+                      final currentBalance = userData['Balance'] as double;
+
+                      // Calculate the new balance
+                      final newBalance = currentBalance - enteredAmount;
+
+                      // Update the balance in Firebase
+                      createTransfer();
+                      updateBalance(newBalance);
+
+                      // Navigate to ConfirmTransactionPage
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => ConfirmTransactionPage(
+                            transactionType: "Bank Transfer",
+                          ),
+                        ),
+                      );
+                    }
+                  });
+                }
               },
               child: const Text(
                 "Next",

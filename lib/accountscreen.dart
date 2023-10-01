@@ -188,7 +188,7 @@ class _AccountScreenState extends State<AccountScreen> {
                     style: fontSecondary(secondaryColor(.4), FontWeight.w500),
                   ),
                   Text(
-                    '${userData['Birthdate']}',
+                    '${userData['Username']}',
                     style: fontDefault(secondaryColor(1), FontWeight.bold),
                   ),
                 ],

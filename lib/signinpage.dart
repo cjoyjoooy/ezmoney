@@ -107,7 +107,7 @@ class _SignInState extends State<SignIn> {
     super.dispose();
   }
 
-  Future checkLogin(username, password) async {
+  Future<void> checkLogin(username, password) async {
     showDialog(
       context: context,
       useRootNavigator: false,
@@ -116,22 +116,31 @@ class _SignInState extends State<SignIn> {
         child: CircularProgressIndicator(),
       ),
     );
+
     try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
+      final authResult = await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: username,
         password: password,
       );
-      setState(() {
-        errormessage = "";
-      });
+
+      if (mounted) {
+        setState(() {
+          errormessage = "";
+        });
+      }
     } on FirebaseAuthException catch (e) {
       print(e);
 
-      setState(() {
-        errormessage = e.message.toString();
-      });
+      if (mounted) {
+        setState(() {
+          errormessage = e.message.toString();
+        });
+      }
     }
-    Navigator.pop(context);
+
+    if (mounted) {
+      Navigator.pop(context);
+    }
   }
 
   @override

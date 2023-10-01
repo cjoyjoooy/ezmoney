@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-
 import '/confirmtransactionpage.dart';
 import 'package:flutter/material.dart';
+import 'package:ezmoney/usertransaction.dart';
 
 class CashIn extends StatefulWidget {
   const CashIn({super.key});
@@ -103,7 +103,37 @@ class _CashInState extends State<CashIn> {
   ];
   String? _selectedBank;
 
+  final TextEditingController bankController = TextEditingController();
+  final TextEditingController accountnumberController = TextEditingController();
   final TextEditingController amountController = TextEditingController();
+
+  Future createCashIn() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      final newCashin = UserTransaction(
+        email: user.email ?? 'Unknown',
+        transactiontype: 'Cash in',
+        bank: _selectedBank!,
+        accountnumber: accountnumberController.text,
+        amount: double.tryParse(amountController.text) ?? 0.0,
+        network: '',
+        accountname: '',
+        date: DateTime.now(),
+      );
+
+      final json = newCashin.toJson();
+
+      try {
+        await FirebaseFirestore.instance
+            .collection('Transaction')
+            .doc() // Firestore will auto-generate a unique document ID
+            .set(json);
+      } catch (e) {
+        print('Error creating Cash In transaction: $e');
+        // Handle error gracefully
+      }
+    }
+  }
 
   // Function to update the balance in Firebase
   Future<void> updateBalance(double newBalance) async {
@@ -200,6 +230,7 @@ class _CashInState extends State<CashIn> {
                   TextField(
                     style: fontDefault(secondaryColor(1), FontWeight.w500),
                     decoration: txtFieldStyle("Account Number"),
+                    controller: accountnumberController,
                   ),
                   const SizedBox(
                     height: 5,
@@ -248,6 +279,7 @@ class _CashInState extends State<CashIn> {
                       final newBalance = currentBalance + enteredAmount;
 
                       // Update the balance in Firebase
+                      createCashIn();
                       updateBalance(newBalance);
 
                       // Navigate to the confirmation page

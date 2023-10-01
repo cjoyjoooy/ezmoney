@@ -139,7 +139,7 @@ class _SignUpState extends State<EditProfile> {
     }
   }
 
-  final _genderList = ['Female', 'Male', 'Others'];
+  final _genderList = ['Male', 'Female', 'Others'];
   String? _selectedGender;
 
   var _isObscured;

@@ -1,5 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
 import '/confirmtransactionpage.dart';
 import 'package:flutter/material.dart';
+
+import 'UserTransaction.dart';
 
 class BuyLoadPage extends StatefulWidget {
   const BuyLoadPage({super.key});
@@ -86,6 +91,53 @@ class _BuyLoadPageState extends State<BuyLoadPage> {
         labelText: label,
       );
 
+  TextEditingController phonenumberController = TextEditingController();
+  TextEditingController amountController = TextEditingController();
+
+  Future createLoad() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      final newCashin = UserTransaction(
+        email: user.email ?? 'Unknown',
+        transactiontype: 'Load',
+        bank: '',
+        accountnumber: '',
+        amount: double.tryParse(amountController.text) ?? 0.0,
+        network: _selectedNetwork!,
+        accountname: '',
+        date: DateTime.now(),
+      );
+
+      final json = newCashin.toJson();
+
+      try {
+        await FirebaseFirestore.instance
+            .collection('Transaction')
+            .doc() // Firestore will auto-generate a unique document ID
+            .set(json);
+      } catch (e) {
+        print('Error creating Cash In transaction: $e');
+        // Handle error gracefully
+      }
+    }
+  }
+
+  // Function to update the balance in Firebase
+  Future<void> updateBalance(double newBalance) async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      try {
+        await FirebaseFirestore.instance
+            .collection('User')
+            .doc(user.uid)
+            .update({'Balance': newBalance});
+      } catch (e) {
+        print('Error updating balance: $e');
+        // Handle error gracefully
+      }
+    }
+  }
+
   final _networkList = [
     'Dito',
     'Globe',
@@ -95,6 +147,7 @@ class _BuyLoadPageState extends State<BuyLoadPage> {
     'Talk N Text',
   ];
   String? _selectedNetwork;
+
   @override
   Widget build(BuildContext context) {
     return Theme(
@@ -174,6 +227,7 @@ class _BuyLoadPageState extends State<BuyLoadPage> {
                   TextField(
                     style: fontDefault(secondaryColor(1), FontWeight.w500),
                     decoration: txtFieldStyle("Phone Number"),
+                    controller: phonenumberController,
                   ),
                   const SizedBox(
                     height: 5,
@@ -181,6 +235,7 @@ class _BuyLoadPageState extends State<BuyLoadPage> {
                   TextField(
                     style: fontDefault(secondaryColor(1), FontWeight.w500),
                     decoration: txtFieldStyle("Amount"),
+                    controller: amountController,
                   ),
                 ],
               ),
@@ -196,13 +251,37 @@ class _BuyLoadPageState extends State<BuyLoadPage> {
             margin: const EdgeInsets.only(bottom: 15, left: 10, right: 10),
             child: ElevatedButton(
               style: btnStyle(accentColor(1), primaryColor(1)),
-              onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) =>
-                        ConfirmTransactionPage(transactionType: "Load"),
-                  ),
-                );
+              onPressed: () async {
+                final enteredAmount =
+                    double.tryParse(amountController.text) ?? 0.0;
+                final enteredPhoneNumber = phonenumberController.text;
+
+                // Retrieve the current balance from Firebase
+                final user = FirebaseAuth.instance.currentUser;
+                if (user != null) {
+                  final userDoc = await FirebaseFirestore.instance
+                      .collection('User')
+                      .doc(user.uid)
+                      .get();
+
+                  if (userDoc.exists) {
+                    final userData = userDoc.data() as Map<String, dynamic>;
+                    final currentBalance = userData['Balance'] as double;
+
+                    // Calculate the new balance
+                    final newBalance = currentBalance - enteredAmount;
+
+                    await createLoad();
+                    await updateBalance(newBalance);
+
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            ConfirmTransactionPage(transactionType: "Load"),
+                      ),
+                    );
+                  }
+                }
               },
               child: const Text(
                 "Next",
