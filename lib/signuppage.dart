@@ -1,9 +1,17 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ezmoney/User.dart';
 import 'package:ezmoney/authenticator.dart';
+import 'package:ezmoney/models/birthdatefield.dart';
+import 'package:ezmoney/models/buttonStyle.dart';
+import 'package:ezmoney/models/validators.dart';
+import 'package:ezmoney/models/gendercombo.dart';
+import 'package:ezmoney/models/passwordtextfield.dart';
+import 'package:ezmoney/models/textfield.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '/signinpage.dart';
 import 'package:flutter/material.dart';
+
+import 'models/appstyle.dart';
 
 class SignUp extends StatefulWidget {
   const SignUp({super.key});
@@ -13,125 +21,7 @@ class SignUp extends StatefulWidget {
 }
 
 class _SignUpState extends State<SignUp> {
-  primaryColor(double opacityVal) => Color.fromRGBO(20, 18, 28, opacityVal);
-  secondaryColor(double opacityVal) =>
-      Color.fromRGBO(250, 250, 250, opacityVal);
-  accentColor(double opacityVal) => Color.fromRGBO(155, 128, 231, opacityVal);
-  tertiaryColor(double opacityVal) => Color.fromRGBO(34, 33, 46, opacityVal);
-
-  fontHeader(colorVal, weightVal) => TextStyle(
-        fontSize: 38,
-        color: colorVal,
-        fontWeight: weightVal,
-        letterSpacing: 1.1,
-      );
-
-  fontDefault(colorVal, weightVal) => TextStyle(
-        fontSize: 18,
-        color: colorVal,
-        fontWeight: weightVal,
-        letterSpacing: 1.1,
-      );
-  fontSecondary(colorVal, weightVal) => TextStyle(
-        fontSize: 16,
-        color: colorVal,
-        letterSpacing: 1.1,
-      );
-  fontTertiary(colorVal, weightVal) => TextStyle(
-        fontSize: 20,
-        color: colorVal,
-        fontWeight: weightVal,
-        letterSpacing: 1.1,
-      );
-  btnStyle(backColor, foreColor) => ElevatedButton.styleFrom(
-        textStyle: fontTertiary(primaryColor(1), FontWeight.bold),
-        minimumSize: const Size.fromHeight(50),
-        backgroundColor: backColor,
-        foregroundColor: foreColor,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15),
-        ),
-      );
-
-  txtFieldStyle(label) => InputDecoration(
-        border: const UnderlineInputBorder(),
-        enabledBorder: const UnderlineInputBorder(
-          borderSide: BorderSide(
-            color: Color.fromRGBO(250, 250, 250, .4),
-          ),
-        ),
-        focusedBorder: const UnderlineInputBorder(
-          borderSide: BorderSide(
-            color: Color.fromRGBO(155, 128, 231, 1),
-          ),
-        ),
-        labelStyle: fontDefault(secondaryColor(.5), FontWeight.w400),
-        labelText: label,
-      );
-
-  txtFieldStyle2(label, iconVal) => InputDecoration(
-        border: const UnderlineInputBorder(),
-        enabledBorder: const UnderlineInputBorder(
-          borderSide: BorderSide(
-            color: Color.fromRGBO(250, 250, 250, .4),
-          ),
-        ),
-        focusedBorder: const UnderlineInputBorder(
-          borderSide: BorderSide(
-            color: Color.fromRGBO(155, 128, 231, 1),
-          ),
-        ),
-        labelStyle: fontDefault(secondaryColor(.5), FontWeight.w400),
-        labelText: label,
-        suffixIcon: iconVal,
-      );
-
-  birthdateStyle(label) => InputDecoration(
-        border: const UnderlineInputBorder(),
-        enabledBorder: const UnderlineInputBorder(
-          borderSide: BorderSide(
-            color: Color.fromRGBO(250, 250, 250, .4),
-          ),
-        ),
-        focusedBorder: const UnderlineInputBorder(
-          borderSide: BorderSide(
-            color: Color.fromRGBO(155, 128, 231, 1),
-          ),
-        ),
-        labelStyle: fontDefault(secondaryColor(.5), FontWeight.w400),
-        labelText: label,
-        suffixIcon: const Icon(Icons.calendar_today_outlined),
-      );
-
-  comboBoxStyle(label) => InputDecoration(
-        border: const UnderlineInputBorder(),
-        enabledBorder: const UnderlineInputBorder(
-          borderSide: BorderSide(
-            color: Color.fromRGBO(250, 250, 250, .4),
-          ),
-        ),
-        focusedBorder: const UnderlineInputBorder(
-          borderSide: BorderSide(
-            color: Color.fromRGBO(155, 128, 231, 1),
-          ),
-        ),
-        labelStyle: fontDefault(secondaryColor(.5), FontWeight.w400),
-        labelText: label,
-      );
-
-  Future<void> _selectDate() async {
-    DateTime? _selected = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(1900),
-      lastDate: DateTime.now(),
-    );
-    if (_selected != null) {
-      setState(() {
-        birthdateController.text = _selected.toString().split(" ")[0];
-      });
-    }
-  }
+  final _formKey = GlobalKey<FormState>();
 
   TextEditingController fnameController = TextEditingController();
   TextEditingController lnameController = TextEditingController();
@@ -152,6 +42,20 @@ class _SignUpState extends State<SignUp> {
 
   var _isObscured;
   var _isCPassObscured;
+
+  Future<void> _selectDate() async {
+    DateTime? _selected = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(1900),
+      lastDate: DateTime.now(),
+    );
+    if (_selected != null) {
+      setState(() {
+        birthdateController.text = _selected.toString().split(" ")[0];
+      });
+    }
+  }
 
   @override
   void initState() {
@@ -207,109 +111,98 @@ class _SignUpState extends State<SignUp> {
       backgroundColor: primaryColor(1),
       body: ListView(
         children: [
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Sign up',
-                  style: fontHeader(secondaryColor(1), FontWeight.bold),
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                TextField(
-                  style: fontDefault(secondaryColor(1), FontWeight.w500),
-                  controller: fnameController,
-                  decoration: txtFieldStyle('First Name'),
-                ),
-                const SizedBox(
-                  height: 5,
-                ),
-                TextField(
-                  style: fontDefault(secondaryColor(1), FontWeight.w500),
-                  controller: lnameController,
-                  decoration: txtFieldStyle('Last Name'),
-                ),
-                const SizedBox(
-                  height: 5,
-                ),
-                TextField(
-                  readOnly: true,
-                  style: fontDefault(secondaryColor(1), FontWeight.w500),
-                  controller: birthdateController,
-                  decoration: birthdateStyle('Birthdate'),
-                  onTap: () {
-                    _selectDate();
-                  },
-                ),
-                const SizedBox(
-                  height: 5,
-                ),
-                DropdownButtonFormField(
-                  style: fontDefault(secondaryColor(1), FontWeight.w500),
-                  value: _selectedGender,
-                  items: _genderList.map((e) {
-                    return DropdownMenuItem(
-                      value: e,
-                      child: Text(e),
-                    );
-                  }).toList(),
-                  onChanged: (val) {
-                    setState(() {
-                      _selectedGender = val!;
-                    });
-                  },
-                  icon: Icon(
-                    Icons.arrow_drop_down,
-                    color: secondaryColor(.5),
+          Form(
+            key: _formKey,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Sign up',
+                    style: fontHeader(secondaryColor(1), FontWeight.bold),
                   ),
-                  decoration: comboBoxStyle('Gender'),
-                  dropdownColor: primaryColor(1),
-                ),
-                const SizedBox(
-                  height: 5,
-                ),
-                TextField(
-                  style: fontDefault(secondaryColor(1), FontWeight.w500),
-                  controller: addressController,
-                  decoration: txtFieldStyle('Address'),
-                ),
-                const SizedBox(
-                  height: 5,
-                ),
-                TextField(
-                  style: fontDefault(secondaryColor(1), FontWeight.w500),
-                  controller: phoneNumberController,
-                  decoration: txtFieldStyle('Phone Number'),
-                ),
-                const SizedBox(
-                  height: 5,
-                ),
-                TextField(
-                  style: fontDefault(secondaryColor(1), FontWeight.w500),
-                  controller: emailController,
-                  decoration: txtFieldStyle('Email'),
-                ),
-                const SizedBox(
-                  height: 5,
-                ),
-                TextField(
-                  style: fontDefault(secondaryColor(1), FontWeight.w500),
-                  controller: usernameController,
-                  decoration: txtFieldStyle('Username'),
-                ),
-                const SizedBox(
-                  height: 5,
-                ),
-                TextField(
-                  controller: passwordController,
-                  obscureText: _isObscured,
-                  style: fontDefault(secondaryColor(.9), FontWeight.w500),
-                  decoration: txtFieldStyle2(
-                    'Password',
-                    _isObscured
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  NormalTextField(
+                    txtController: fnameController,
+                    label: "First Name",
+                    validator:
+                        validateFirstName, // Now you can use the function directly
+                  ),
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  NormalTextField(
+                    txtController: lnameController,
+                    label: "Last Name",
+                    validator: validateLastName,
+                  ),
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  BirthDateField(
+                    txtController: birthdateController,
+                    onTapMethod: () {
+                      _selectDate();
+                    },
+                  ),
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  GenderComboBox(
+                    label: "Gender",
+                    value: _selectedGender,
+                    itemList: _genderList.map((e) {
+                      return DropdownMenuItem(
+                        value: e,
+                        child: Text(e),
+                      );
+                    }).toList(),
+                    onChangeValue: (val) {
+                      setState(() {
+                        _selectedGender = val;
+                      });
+                    },
+                  ),
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  NormalTextField(
+                    txtController: addressController,
+                    label: "Address",
+                    validator: validateAddress,
+                  ),
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  NormalTextField(
+                    txtController: phoneNumberController,
+                    label: "Phone Number",
+                    validator: validatePhoneNumber,
+                  ),
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  NormalTextField(
+                    txtController: emailController,
+                    label: "Email",
+                    validator: validateEmail,
+                  ),
+                  NormalTextField(
+                    txtController: usernameController,
+                    label: "Username",
+                    validator: validateUsername,
+                  ),
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  PasswordField(
+                    txtController: passwordController,
+                    label: "Password",
+                    validator: validatePassword,
+                    iconVal: _isObscured
                         ? GestureDetector(
                             onTap: () {
                               setState(() {
@@ -326,18 +219,17 @@ class _SignUpState extends State<SignUp> {
                             },
                             child: const Icon(Icons.visibility_off),
                           ),
+                    obscurevalue: _isObscured,
                   ),
-                ),
-                const SizedBox(
-                  height: 5,
-                ),
-                TextField(
-                  controller: confirmPasswordController,
-                  obscureText: _isCPassObscured,
-                  style: fontDefault(secondaryColor(.9), FontWeight.w500),
-                  decoration: txtFieldStyle2(
-                    'Confirm Password',
-                    _isCPassObscured
+                  PasswordField(
+                    txtController: confirmPasswordController,
+                    label: "Confirm Password",
+                    validator: (value) => validateConfirmPassword(
+                      value,
+                      passwordController,
+                      confirmPasswordController,
+                    ),
+                    iconVal: _isCPassObscured
                         ? GestureDetector(
                             onTap: () {
                               setState(() {
@@ -354,52 +246,53 @@ class _SignUpState extends State<SignUp> {
                             },
                             child: const Icon(Icons.visibility_off),
                           ),
+                    obscurevalue: _isCPassObscured,
                   ),
-                ),
-                const SizedBox(
-                  height: 30,
-                ),
-                ElevatedButton(
-                  style: btnStyle(accentColor(1), primaryColor(1)),
-                  onPressed: () {
-                    signUpUser();
-                  },
-                  child: const Text(
-                    "Sign Up",
+                  const SizedBox(
+                    height: 30,
                   ),
-                ),
-                const SizedBox(
-                  height: 5,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      "Already have an account?",
-                      style: fontSecondary(secondaryColor(1), FontWeight.w300),
-                    ),
-                    const SizedBox(
-                      width: 5,
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => const SignIn(),
-                          ),
-                        );
-                      },
-                      child: Text(
-                        "Sign in",
-                        style: fontSecondary(accentColor(1), FontWeight.w800),
+                  Button(
+                    btnLabel: "Sign Up",
+                    onPressedMethod: () {
+                      if (_formKey.currentState!.validate()) {
+                        signUpUser();
+                      }
+                    },
+                  ),
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Already have an account?",
+                        style:
+                            fontSecondary(secondaryColor(1), FontWeight.w300),
                       ),
-                    ),
-                  ],
-                ),
-                const SizedBox(
-                  height: 60,
-                ),
-              ],
+                      const SizedBox(
+                        width: 5,
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => const SignIn(),
+                            ),
+                          );
+                        },
+                        child: Text(
+                          "Sign in",
+                          style: fontSecondary(accentColor(1), FontWeight.w800),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 60,
+                  ),
+                ],
+              ),
             ),
           ),
         ],
