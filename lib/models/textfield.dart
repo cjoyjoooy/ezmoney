@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 import 'appstyle.dart';
 
@@ -13,7 +12,6 @@ class NormalTextField extends StatelessWidget {
 
   final TextEditingController txtController;
   final String label;
-
   final String? Function(String?)? validator;
 
   @override
