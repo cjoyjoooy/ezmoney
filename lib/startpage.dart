@@ -1,58 +1,14 @@
+import 'package:ezmoney/models/buttonStyle.dart';
+import 'package:ezmoney/models/buttonStyle2.dart';
+
 import '/authenticator.dart';
 import '/signuppage.dart';
 import 'package:flutter/material.dart';
 
+import 'models/appstyle.dart';
+
 class StartPage extends StatelessWidget {
   StartPage({super.key});
-
-  primaryColor(double opacityVal) => Color.fromRGBO(20, 18, 28, opacityVal);
-  secondaryColor(double opacityVal) =>
-      Color.fromRGBO(250, 250, 250, opacityVal);
-  accentColor(double opacityVal) => Color.fromRGBO(155, 128, 231, opacityVal);
-  tertiaryColor(double opacityVal) => Color.fromRGBO(34, 33, 46, opacityVal);
-
-  fontHeader(colorVal, weightVal) => TextStyle(
-        fontSize: 38,
-        color: colorVal,
-        fontWeight: weightVal,
-        letterSpacing: 1.1,
-      );
-
-  fontDefault(colorVal, weightVal) => TextStyle(
-        fontSize: 18,
-        color: colorVal,
-        fontWeight: weightVal,
-        letterSpacing: 1.1,
-      );
-  fontSecondary(colorVal, weightVal) => TextStyle(
-        fontSize: 16,
-        color: colorVal,
-        letterSpacing: 1.1,
-      );
-  fontTertiary(colorVal, weightVal) => TextStyle(
-        fontSize: 20,
-        color: colorVal,
-        fontWeight: weightVal,
-        letterSpacing: 1.1,
-      );
-  btnStyle(backColor, foreColor) => ElevatedButton.styleFrom(
-        textStyle: fontTertiary(primaryColor(1), FontWeight.bold),
-        minimumSize: const Size.fromHeight(50),
-        backgroundColor: backColor,
-        foregroundColor: foreColor,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15),
-        ),
-      );
-  btnStyle2(backColor, foreColor) => ElevatedButton.styleFrom(
-      textStyle: fontTertiary(primaryColor(1), FontWeight.bold),
-      minimumSize: const Size.fromHeight(50),
-      backgroundColor: backColor,
-      foregroundColor: foreColor,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(15),
-      ),
-      side: BorderSide(width: 2, color: accentColor(1)));
 
   @override
   Widget build(BuildContext context) {
@@ -93,37 +49,28 @@ class StartPage extends StatelessWidget {
             const SizedBox(
               height: 35,
             ),
-            ElevatedButton(
-              style: btnStyle(accentColor(1), primaryColor(1)),
-              onPressed: () {
+            Button(
+              btnLabel: "Sign In",
+              onPressedMethod: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (context) => Authenticator(),
                   ),
                 );
               },
-              child: const Text(
-                "Sign In",
-              ),
             ),
             const SizedBox(
               height: 20,
             ),
-            ElevatedButton(
-              style: btnStyle2(
-                primaryColor(1),
-                accentColor(1),
-              ),
-              onPressed: () {
+            Button2(
+              btnLabel: "Sign Up",
+              onPressedMethod: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (context) => SignUp(),
                   ),
                 );
               },
-              child: const Text(
-                "Sign Up",
-              ),
             ),
           ],
         ),
