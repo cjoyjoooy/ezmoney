@@ -30,7 +30,7 @@ class MyApp extends StatelessWidget {
       ),
       home: AnimatedSplashScreen(
         splash: 'images/EZLOGO 2.png',
-        duration: 3500,
+        duration: 6000,
         pageTransitionType: PageTransitionType.bottomToTop,
         nextScreen: StartPage(),
         splashTransition: SplashTransition.scaleTransition,
