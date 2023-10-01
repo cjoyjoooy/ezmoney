@@ -65,91 +65,34 @@ class _SignUpState extends State<SignUp> {
     _selectedGender = _genderList[0];
   }
 
-  Future<void> signUpUser() async {
-    try {
-      if (passwordController.text == confirmPasswordController.text) {
-        await FirebaseAuth.instance.createUserWithEmailAndPassword(
-          email: emailController.text.trim(),
-          password: passwordController.text.trim(),
-        );
-
-        // User registration successful, now add user data to Firestore
-        addUserData();
-      } else {
-        // Passwords do not match
-        throw FirebaseAuthException(
-            message: 'Passwords do not match', code: 'passwords-do-not-match');
-      }
-    } catch (e) {
-      // Handle Firebase Authentication errors
-      String errorMessage = 'An error occurred while signing up';
-      if (e is FirebaseAuthException) {
-        errorMessage = e.message ?? 'An error occurred';
-      }
-      // Display the error message to the user
-      showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text('Sign-Up Error'),
-            content: Text(errorMessage),
-            actions: <Widget>[
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: Text('OK'),
-              ),
-            ],
-          );
-        },
-      );
-    }
+  Future signUpUser() async {
+    await FirebaseAuth.instance.createUserWithEmailAndPassword(
+      email: emailController.text.trim(),
+      password: passwordController.text.trim(),
+    );
+    addUserData();
   }
 
   Future addUserData() async {
-    try {
-      final user = FirebaseAuth.instance.currentUser!;
-      final userid = user.uid;
-      final docUser = FirebaseFirestore.instance.collection('User').doc(userid);
-      final newUser = Users(
-        id: userid,
-        firstname: fnameController.text.trim(),
-        lastname: lnameController.text.trim(),
-        birthdate: birthdateController.text.trim(),
-        gender: _selectedGender!,
-        address: addressController.text.trim(),
-        phoneNumber: phoneNumberController.text.trim(),
-        email: emailController.text.trim(),
-        username: usernameController.text.trim(),
-        balance: 0,
-      );
+    final user = FirebaseAuth.instance.currentUser!;
+    final userid = user.uid;
+    final docUser = FirebaseFirestore.instance.collection('User').doc(userid);
+    final newUser = Users(
+      id: userid,
+      firstname: fnameController.text.trim(),
+      lastname: lnameController.text.trim(),
+      birthdate: birthdateController.text.trim(),
+      gender: _selectedGender!,
+      address: addressController.text.trim(),
+      phoneNumber: phoneNumberController.text.trim(),
+      email: emailController.text.trim(),
+      username: usernameController.text.trim(),
+      balance: 0,
+    );
 
-      final json = newUser.toJson();
-      await docUser.set(json);
-      goToAuthenticator();
-    } catch (e) {
-      // Handle Firestore errors
-      String errorMessage = 'An error occurred while adding user data';
-      // You can add more specific error handling for Firestore here if needed
-      showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text('Error'),
-            content: Text(errorMessage),
-            actions: <Widget>[
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: Text('OK'),
-              ),
-            ],
-          );
-        },
-      );
-    }
+    final json = newUser.toJson();
+    await docUser.set(json);
+    goToAuthenticator();
   }
 
   goToAuthenticator() {
@@ -169,7 +112,7 @@ class _SignUpState extends State<SignUp> {
           Form(
             key: _formKey,
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
