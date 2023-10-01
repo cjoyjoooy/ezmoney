@@ -23,8 +23,8 @@ class GenderComboBox extends StatelessWidget {
       style: fontDefault(secondaryColor(1), FontWeight.w500),
       value: value,
       items: itemList,
-      onChanged: (value) {
-        onChangeValue;
+      onChanged: (selectedValue) {
+        onChangeValue(selectedValue as String);
       },
       validator: (value) {
         if (value == '') {
