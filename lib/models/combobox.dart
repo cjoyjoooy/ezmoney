@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'appstyle.dart';
 
-class GenderComboBox extends StatelessWidget {
-  const GenderComboBox({
+class ComboBox extends StatelessWidget {
+  const ComboBox({
     Key? key, // Fix: Added the missing Key parameter
     required this.label,
     required this.value,
@@ -49,7 +49,7 @@ class GenderComboBox extends StatelessWidget {
           ),
         ),
         labelStyle: fontDefault(secondaryColor(.5), FontWeight.w400),
-        labelText: "Gender",
+        labelText: label,
       ),
       dropdownColor: primaryColor(1),
     );

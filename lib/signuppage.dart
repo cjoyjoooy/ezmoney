@@ -4,7 +4,6 @@ import 'package:ezmoney/authenticator.dart';
 import 'package:ezmoney/models/birthdatefield.dart';
 import 'package:ezmoney/models/buttonStyle.dart';
 import 'package:ezmoney/models/validators.dart';
-import 'package:ezmoney/models/gendercombo.dart';
 import 'package:ezmoney/models/passwordtextfield.dart';
 import 'package:ezmoney/models/textfield.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -12,6 +11,7 @@ import '/signinpage.dart';
 import 'package:flutter/material.dart';
 
 import 'models/appstyle.dart';
+import 'models/combobox.dart';
 
 class SignUp extends StatefulWidget {
   const SignUp({super.key});
@@ -149,7 +149,7 @@ class _SignUpState extends State<SignUp> {
                   const SizedBox(
                     height: 5,
                   ),
-                  GenderComboBox(
+                  ComboBox(
                     label: "Gender",
                     value: _selectedGender,
                     itemList: _genderList.map((e) {
