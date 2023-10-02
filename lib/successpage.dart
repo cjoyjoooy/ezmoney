@@ -21,9 +21,11 @@ class _SuccessState extends State<Success> {
         centerTitle: true,
         leading: IconButton(
           onPressed: () {
-            Navigator.pop(context);
-            Navigator.pop(context);
-            Navigator.pop(context);
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => Home(),
+              ),
+            );
           },
           icon: const Icon(
             Icons.arrow_back,
