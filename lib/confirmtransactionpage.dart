@@ -1,5 +1,9 @@
+import 'package:ezmoney/models/buttonStyle.dart';
+
 import '/successpage.dart';
 import 'package:flutter/material.dart';
+
+import 'models/appstyle.dart';
 
 class ConfirmTransactionPage extends StatefulWidget {
   const ConfirmTransactionPage({super.key, required this.transactionType});
@@ -10,52 +14,6 @@ class ConfirmTransactionPage extends StatefulWidget {
 }
 
 class _ConfirmTransactionPageState extends State<ConfirmTransactionPage> {
-  primaryColor(double opacityVal) => Color.fromRGBO(20, 18, 28, opacityVal);
-
-  secondaryColor(double opacityVal) =>
-      Color.fromRGBO(250, 250, 250, opacityVal);
-
-  accentColor(double opacityVal) => Color.fromRGBO(155, 128, 231, opacityVal);
-
-  tertiaryColor(double opacityVal) => Color.fromRGBO(34, 33, 46, opacityVal);
-
-  fontHeader(colorVal, weightVal) => TextStyle(
-        fontSize: 38,
-        color: colorVal,
-        fontWeight: weightVal,
-        letterSpacing: 1.1,
-      );
-
-  fontDefault(colorVal, weightVal) => TextStyle(
-        fontSize: 18,
-        color: colorVal,
-        fontWeight: weightVal,
-        letterSpacing: 1.1,
-      );
-
-  fontSecondary(colorVal, weightVal) => TextStyle(
-        fontSize: 16,
-        color: colorVal,
-        letterSpacing: 1.1,
-      );
-
-  fontTertiary(colorVal, weightVal) => TextStyle(
-        fontSize: 20,
-        color: colorVal,
-        fontWeight: weightVal,
-        letterSpacing: 1.1,
-      );
-
-  btnStyle(backColor, foreColor) => ElevatedButton.styleFrom(
-        textStyle: fontTertiary(primaryColor(1), FontWeight.bold),
-        minimumSize: const Size.fromHeight(50),
-        backgroundColor: backColor,
-        foregroundColor: foreColor,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15),
-        ),
-      );
-
   String _getTransactionButton(String transactionType) {
     final labelMap = {
       "Send": "Send Money",
@@ -202,18 +160,15 @@ class _ConfirmTransactionPageState extends State<ConfirmTransactionPage> {
                   ],
                 ),
               ),
-              ElevatedButton(
-                style: btnStyle(accentColor(1), primaryColor(1)),
-                onPressed: () {
+              Button(
+                btnLabel: _getTransactionButton(widget.transactionType),
+                onPressedMethod: () {
                   Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (context) => Success(),
                     ),
                   );
                 },
-                child: Text(
-                  _getTransactionButton(widget.transactionType),
-                ),
               ),
             ],
           ),

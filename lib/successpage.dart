@@ -1,6 +1,8 @@
 import '/homepage.dart';
 import 'package:flutter/material.dart';
 
+import 'models/appstyle.dart';
+
 class Success extends StatefulWidget {
   const Success({
     super.key,
@@ -11,51 +13,6 @@ class Success extends StatefulWidget {
 }
 
 class _SuccessState extends State<Success> {
-  primaryColor(double opacityVal) => Color.fromRGBO(20, 18, 28, opacityVal);
-
-  secondaryColor(double opacityVal) =>
-      Color.fromRGBO(250, 250, 250, opacityVal);
-
-  accentColor(double opacityVal) => Color.fromRGBO(155, 128, 231, opacityVal);
-
-  tertiaryColor(double opacityVal) => Color.fromRGBO(34, 33, 46, opacityVal);
-
-  fontHeader(colorVal, weightVal) => TextStyle(
-        fontSize: 38,
-        color: colorVal,
-        fontWeight: weightVal,
-        letterSpacing: 1.1,
-      );
-
-  fontDefault(colorVal, weightVal) => TextStyle(
-        fontSize: 18,
-        color: colorVal,
-        fontWeight: weightVal,
-        letterSpacing: 1.1,
-      );
-
-  fontSecondary(colorVal, weightVal) => TextStyle(
-        fontSize: 16,
-        color: colorVal,
-        letterSpacing: 1.1,
-      );
-
-  fontTertiary(colorVal, weightVal) => TextStyle(
-        fontSize: 32,
-        color: colorVal,
-        fontWeight: weightVal,
-        letterSpacing: 1.1,
-      );
-
-  btnStyle(backColor, foreColor) => ElevatedButton.styleFrom(
-        textStyle: fontTertiary(primaryColor(1), FontWeight.bold),
-        minimumSize: const Size.fromHeight(50),
-        backgroundColor: backColor,
-        foregroundColor: foreColor,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15),
-        ),
-      );
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -80,7 +37,7 @@ class _SuccessState extends State<Success> {
         elevation: 0,
       ),
       body: Container(
-        margin: EdgeInsets.only(bottom: 100),
+        margin: const EdgeInsets.only(bottom: 100),
         height: double.infinity,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
