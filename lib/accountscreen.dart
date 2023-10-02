@@ -243,7 +243,7 @@ class _AccountScreenState extends State<AccountScreen> {
                 ),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.transparent),
+                      backgroundColor: Colors.transparent, elevation: 0),
                   onPressed: () async {
                     // Show a confirmation dialog
                     bool confirmDelete = await showDialog(
@@ -308,6 +308,9 @@ class _AccountScreenState extends State<AccountScreen> {
                     'Delete Account',
                     style: fontTertiary(deleteColor(1), FontWeight.bold),
                   ),
+                ),
+                const SizedBox(
+                  height: 10,
                 ),
               ],
             ),

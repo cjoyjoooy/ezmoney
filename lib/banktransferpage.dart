@@ -206,7 +206,7 @@ class _BankTransferPageState extends State<BankTransferPage> {
         ),
         persistentFooterButtons: <Widget>[
           Container(
-            margin: const EdgeInsets.only(bottom: 15, left: 10, right: 10),
+            margin: const EdgeInsets.only(bottom: 25, left: 10, right: 10),
             child: Button(
               btnLabel: "Next",
               onPressedMethod: () {

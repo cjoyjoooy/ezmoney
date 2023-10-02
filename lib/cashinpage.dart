@@ -7,7 +7,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import '/confirmtransactionpage.dart';
 import 'package:flutter/material.dart';
 import 'package:ezmoney/usertransaction.dart';
-
 import 'models/appstyle.dart';
 
 class CashIn extends StatefulWidget {
@@ -184,7 +183,7 @@ class _CashInState extends State<CashIn> {
         ),
         persistentFooterButtons: <Widget>[
           Container(
-            margin: const EdgeInsets.only(bottom: 15, left: 10, right: 10),
+            margin: const EdgeInsets.only(bottom: 25, left: 10, right: 10),
             child: Button(
               btnLabel: "Next",
               onPressedMethod: () {
