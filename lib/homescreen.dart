@@ -5,6 +5,7 @@ import '/billspage.dart';
 import '/buyloadpage.dart';
 import '/cashinpage.dart';
 import '/sendmoneypage.dart';
+import 'models/appstyle.dart';
 import 'transaction.dart' as CustomTransaction;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -18,37 +19,6 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeState extends State<HomeScreen> {
   final user = FirebaseAuth.instance.currentUser!;
-
-  primaryColor(double opacityVal) => Color.fromRGBO(20, 18, 28, opacityVal);
-  secondaryColor(double opacityVal) =>
-      Color.fromRGBO(250, 250, 250, opacityVal);
-  accentColor(double opacityVal) => Color.fromRGBO(155, 128, 231, opacityVal);
-  tertiaryColor(double opacityVal) => Color.fromRGBO(34, 33, 46, opacityVal);
-
-  fontHeader(colorVal, weightVal) => TextStyle(
-        fontSize: 38,
-        color: colorVal,
-        fontWeight: weightVal,
-        letterSpacing: 1.1,
-      );
-
-  fontDefault(colorVal, weightVal) => TextStyle(
-        fontSize: 18,
-        color: colorVal,
-        fontWeight: weightVal,
-        letterSpacing: 1.1,
-      );
-  fontSecondary(colorVal, weightVal) => TextStyle(
-        fontSize: 16,
-        color: colorVal,
-        letterSpacing: 1.1,
-      );
-  fontTertiary(colorVal, weightVal) => TextStyle(
-        fontSize: 32,
-        color: colorVal,
-        fontWeight: weightVal,
-        letterSpacing: 1.1,
-      );
 
   Future<num> fetchUserBalance(String uid) async {
     try {

@@ -81,3 +81,10 @@ String? validateConfirmPassword(
 
   return null;
 }
+
+String? validateField(String? value) {
+  if (value!.isEmpty) {
+    return 'Field empty. Please input information';
+  }
+  return null;
+}

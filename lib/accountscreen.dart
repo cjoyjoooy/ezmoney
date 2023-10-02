@@ -1,8 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:ezmoney/models/buttonStyle.dart';
 import 'package:ezmoney/startpage.dart';
 import '/profileedit.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+
+import 'models/appstyle.dart';
 
 class AccountScreen extends StatefulWidget {
   const AccountScreen({super.key});
@@ -12,47 +15,6 @@ class AccountScreen extends StatefulWidget {
 }
 
 class _AccountScreenState extends State<AccountScreen> {
-  primaryColor(double opacityVal) => Color.fromRGBO(20, 18, 28, opacityVal);
-  secondaryColor(double opacityVal) =>
-      Color.fromRGBO(250, 250, 250, opacityVal);
-  accentColor(double opacityVal) => Color.fromRGBO(155, 128, 231, opacityVal);
-  tertiaryColor(double opacityVal) => Color.fromRGBO(34, 33, 46, opacityVal);
-  deleteColor(double opacityVal) => Color.fromRGBO(243, 36, 36, opacityVal);
-
-  fontHeader(colorVal, weightVal) => TextStyle(
-        fontSize: 38,
-        color: colorVal,
-        fontWeight: weightVal,
-        letterSpacing: 1.1,
-      );
-
-  fontDefault(colorVal, weightVal) => TextStyle(
-        fontSize: 18,
-        color: colorVal,
-        fontWeight: weightVal,
-        letterSpacing: 1.1,
-      );
-  fontSecondary(colorVal, weightVal) => TextStyle(
-        fontSize: 16,
-        color: colorVal,
-        letterSpacing: 1.1,
-      );
-  fontTertiary(colorVal, weightVal) => TextStyle(
-        fontSize: 20,
-        color: colorVal,
-        fontWeight: weightVal,
-        letterSpacing: 1.1,
-      );
-  btnStyle(backColor, foreColor) => ElevatedButton.styleFrom(
-        textStyle: fontTertiary(primaryColor(1), FontWeight.bold),
-        minimumSize: const Size.fromHeight(50),
-        backgroundColor: backColor,
-        foregroundColor: foreColor,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15),
-        ),
-      );
-
   Widget accountProfile(User? user) {
     return StreamBuilder<DocumentSnapshot>(
       stream: FirebaseFirestore.instance
@@ -266,18 +228,15 @@ class _AccountScreenState extends State<AccountScreen> {
             margin: const EdgeInsets.only(left: 10, right: 10),
             child: Column(
               children: [
-                ElevatedButton(
-                  style: btnStyle(accentColor(1), primaryColor(1)),
-                  onPressed: () {
+                Button(
+                  btnLabel: "Edit Profile",
+                  onPressedMethod: () {
                     Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: (context) => EditProfile(),
                       ),
                     );
                   },
-                  child: const Text(
-                    "Edit Profile",
-                  ),
                 ),
                 const SizedBox(
                   height: 5,

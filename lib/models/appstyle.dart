@@ -4,6 +4,7 @@ primaryColor(double opacityVal) => Color.fromRGBO(20, 18, 28, opacityVal);
 secondaryColor(double opacityVal) => Color.fromRGBO(250, 250, 250, opacityVal);
 accentColor(double opacityVal) => Color.fromRGBO(155, 128, 231, opacityVal);
 tertiaryColor(double opacityVal) => Color.fromRGBO(34, 33, 46, opacityVal);
+deleteColor(double opacityVal) => Color.fromRGBO(243, 36, 36, opacityVal);
 
 fontHeader(colorVal, weightVal) => TextStyle(
       fontSize: 38,

@@ -28,7 +28,7 @@ class ComboBox extends StatelessWidget {
       },
       validator: (value) {
         if (value == '') {
-          return 'Please enter your gender';
+          return 'Field empty. Please select a data';
         }
         return null;
       },
