@@ -36,7 +36,7 @@ class _SendMoneyPageState extends State<SendMoneyPage> {
         accountnumber: '',
         amount: double.tryParse(amountController.text) ?? 0.0,
         network: '',
-        accountname: '',
+        accountname: nameController.text,
         date: DateTime.now(),
       );
 
