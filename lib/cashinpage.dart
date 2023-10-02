@@ -77,6 +77,7 @@ class _CashInState extends State<CashIn> {
     final user = FirebaseAuth.instance.currentUser;
     if (user != null) {
       try {
+        // Update the balance in Firebase
         await FirebaseFirestore.instance
             .collection('User')
             .doc(user.uid)
@@ -188,43 +189,17 @@ class _CashInState extends State<CashIn> {
               btnLabel: "Next",
               onPressedMethod: () {
                 if (_formKey.currentState!.validate()) {
-                  // Parse the amount entered in the TextField
-                  final enteredAmount =
-                      double.tryParse(amountController.text) ?? 0.0;
-
-                  // Retrieve the current balance from Firebase
-                  final user = FirebaseAuth.instance.currentUser;
-                  if (user != null) {
-                    FirebaseFirestore.instance
-                        .collection('User')
-                        .doc(user.uid)
-                        .get()
-                        .then((userDoc) {
-                      if (userDoc.exists) {
-                        final userData = userDoc.data() as Map<String, dynamic>;
-                        final currentBalance = userData['Balance'] as double;
-
-                        // Calculate the new balance
-                        final newBalance = currentBalance + enteredAmount;
-
-                        // Update the balance in Firebase
-                        createCashIn();
-                        updateBalance(newBalance);
-
-                        // Navigate to the confirmation page
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => ConfirmTransactionPage(
-                              transactionType: 'Cash In',
-                            ),
-                          ),
-                        );
-                      }
-                    }).catchError((error) {
-                      print('Error fetching user data: $error');
-                      // Handle error gracefully
-                    });
-                  }
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => ConfirmTransactionPage(
+                        transactionType: "Cash In",
+                        createTransferCallback: createCashIn,
+                        updateBalanceCallback: updateBalance,
+                        name: accountnumberController.text,
+                        amount: amountController.text,
+                      ),
+                    ),
+                  );
                 }
               },
             ),

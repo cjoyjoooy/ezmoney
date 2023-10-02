@@ -56,6 +56,7 @@ class _BuyLoadPageState extends State<BuyLoadPage> {
     final user = FirebaseAuth.instance.currentUser;
     if (user != null) {
       try {
+        // Update the balance in Firebase
         await FirebaseFirestore.instance
             .collection('User')
             .doc(user.uid)
@@ -180,38 +181,19 @@ class _BuyLoadPageState extends State<BuyLoadPage> {
             margin: const EdgeInsets.only(bottom: 15, left: 10, right: 10),
             child: Button(
               btnLabel: "Next",
-              onPressedMethod: () async {
+              onPressedMethod: () {
                 if (_formKey.currentState!.validate()) {
-                  final enteredAmount =
-                      double.tryParse(amountController.text) ?? 0.0;
-                  final enteredPhoneNumber = phonenumberController.text;
-
-                  // Retrieve the current balance from Firebase
-                  final user = FirebaseAuth.instance.currentUser;
-                  if (user != null) {
-                    final userDoc = await FirebaseFirestore.instance
-                        .collection('User')
-                        .doc(user.uid)
-                        .get();
-
-                    if (userDoc.exists) {
-                      final userData = userDoc.data() as Map<String, dynamic>;
-                      final currentBalance = userData['Balance'] as double;
-
-                      // Calculate the new balance
-                      final newBalance = currentBalance - enteredAmount;
-
-                      await createLoad();
-                      await updateBalance(newBalance);
-
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              ConfirmTransactionPage(transactionType: "Load"),
-                        ),
-                      );
-                    }
-                  }
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => ConfirmTransactionPage(
+                        transactionType: "Load",
+                        createTransferCallback: createLoad,
+                        updateBalanceCallback: updateBalance,
+                        name: '',
+                        amount: amountController.text,
+                      ),
+                    ),
+                  );
                 }
               },
             ),

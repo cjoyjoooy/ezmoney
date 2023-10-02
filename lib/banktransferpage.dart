@@ -54,6 +54,7 @@ class _BankTransferPageState extends State<BankTransferPage> {
     final user = FirebaseAuth.instance.currentUser;
     if (user != null) {
       try {
+        // Update the balance in Firebase
         await FirebaseFirestore.instance
             .collection('User')
             .doc(user.uid)
@@ -210,39 +211,17 @@ class _BankTransferPageState extends State<BankTransferPage> {
               btnLabel: "Next",
               onPressedMethod: () {
                 if (_formKey.currentState!.validate()) {
-                  final enteredAmount =
-                      double.tryParse(amountController.text) ?? 0.0;
-
-                  // Retrieve the current balance from Firebase
-                  final user = FirebaseAuth.instance.currentUser;
-                  if (user != null) {
-                    FirebaseFirestore.instance
-                        .collection('User')
-                        .doc(user.uid)
-                        .get()
-                        .then((userDoc) {
-                      if (userDoc.exists) {
-                        final userData = userDoc.data() as Map<String, dynamic>;
-                        final currentBalance = userData['Balance'] as double;
-
-                        // Calculate the new balance
-                        final newBalance = currentBalance - enteredAmount;
-
-                        // Update the balance in Firebase
-                        createTransfer();
-                        updateBalance(newBalance);
-
-                        // Navigate to ConfirmTransactionPage
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => ConfirmTransactionPage(
-                              transactionType: "Bank Transfer",
-                            ),
-                          ),
-                        );
-                      }
-                    });
-                  }
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => ConfirmTransactionPage(
+                        transactionType: "Bank Transfer",
+                        createTransferCallback: createTransfer,
+                        updateBalanceCallback: updateBalance,
+                        name: accountnumberController.text,
+                        amount: amountController.text,
+                      ),
+                    ),
+                  );
                 }
               },
             ),
