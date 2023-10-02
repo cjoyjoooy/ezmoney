@@ -89,9 +89,16 @@ class _HomeState extends State<HomeScreen> {
                         "Total Balance",
                         style: fontDefault(secondaryColor(.4), FontWeight.w500),
                       ),
-                      Text(
-                        '\$$formattedBalance',
-                        style: fontTertiary(secondaryColor(1), FontWeight.bold),
+                      Row(
+                        children: [
+                          Text(
+                            '\u20B1 $formattedBalance',
+                            style: TextStyle(
+                                fontSize: 30,
+                                color: secondaryColor(1),
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ],
                       ),
                     ],
                   ),
@@ -201,37 +208,33 @@ class _HomeState extends State<HomeScreen> {
         ],
       );
 
-  Widget transaction(type, date, name, amount) => Column(
+  Widget transaction(type, date, amount) => Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                type,
-                style: fontSecondary(secondaryColor(.4), FontWeight.w500),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    type,
+                    style: fontDefault(secondaryColor(1), FontWeight.w500),
+                  ),
+                  Text(
+                    date,
+                    style: fontSecondary(secondaryColor(.4), FontWeight.w500),
+                  ),
+                ],
               ),
               Text(
-                date,
-                style: fontSecondary(secondaryColor(.4), FontWeight.w500),
-              ),
-            ],
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                name,
-                style: fontDefault(secondaryColor(1), FontWeight.w500),
-              ),
-              Text(
-                '-\$$amount',
-                style: fontDefault(secondaryColor(1), FontWeight.w500),
+                '- $amount',
+                style: fontTertiary(secondaryColor(1), FontWeight.bold),
               ),
             ],
           ),
           const SizedBox(
-            height: 12,
+            height: 10,
           ),
         ],
       );
@@ -245,16 +248,15 @@ class _HomeState extends State<HomeScreen> {
         backgroundColor: Colors.transparent,
         title: Row(
           children: [
-            Image.asset(
-              'images/EZLOGO 2.png',
-              height: 43,
-            ),
-            const SizedBox(
+            SizedBox(
               width: 10,
             ),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                SizedBox(
+                  height: 10,
+                ),
                 Text(
                   'Hello,',
                   style: fontSecondary(secondaryColor(.6), FontWeight.w500),
@@ -263,7 +265,7 @@ class _HomeState extends State<HomeScreen> {
                   future: fetchUsername(user.uid),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Text(
+                      return const Text(
                           'Loading...'); // Show loading indicator while fetching data
                     } else if (snapshot.hasError) {
                       return Text('Error: ${snapshot.error}');
@@ -310,7 +312,7 @@ class _HomeState extends State<HomeScreen> {
                         Text(
                           "Transactions",
                           style:
-                              fontDefault(secondaryColor(1), FontWeight.bold),
+                              fontTertiary(secondaryColor(1), FontWeight.bold),
                         ),
                         GestureDetector(
                           onTap: () {
@@ -323,38 +325,22 @@ class _HomeState extends State<HomeScreen> {
                           },
                           child: Text(
                             "See all",
-                            style: fontDefault(accentColor(1), FontWeight.bold),
+                            style:
+                                fontTertiary(accentColor(1), FontWeight.bold),
                           ),
                         ),
                       ],
                     ),
                     const SizedBox(
-                      height: 10,
+                      height: 15,
                     ),
-                    transaction(
-                        'Send money to', '03 Aug 2023', 'Feiah Macalde', 3600),
-                    transaction(
-                        'Send money to', '03 Aug 2023', 'Lex Vincent Lao', 500),
-                    transaction(
-                        'Send money to', '03 Aug 2023', 'Lex Vincent Lao', 500),
-                    transaction('Send money to', '15 Sep 2023',
-                        'Celeste Joy Vagilidad', 1500),
-                    transaction(
-                        'Send money to', '03 Aug 2023', 'Feiah Macalde', 3600),
-                    transaction(
-                        'Send money to', '03 Aug 2023', 'Lex Vincent Lao', 500),
-                    transaction(
-                        'Send money to', '03 Aug 2023', 'Lex Vincent Lao', 500),
-                    transaction('Send money to', '15 Sep 2023',
-                        'Celeste Joy Vagilidad', 1500),
-                    transaction(
-                        'Send money to', '03 Aug 2023', 'Feiah Macalde', 3600),
-                    transaction(
-                        'Send money to', '03 Aug 2023', 'Lex Vincent Lao', 500),
-                    transaction(
-                        'Send money to', '03 Aug 2023', 'Lex Vincent Lao', 500),
-                    transaction('Send money to', '15 Sep 2023',
-                        'Celeste Joy Vagilidad', 1500),
+                    transaction('Send money', '03 Aug 2023', 1500),
+                    transaction('Send money', '03 Aug 2023', 1500),
+                    transaction('Send money', '03 Aug 2023', 1500),
+                    transaction('Send money', '03 Aug 2023', 1500),
+                    transaction('Send money', '03 Aug 2023', 1500),
+                    transaction('Send money', '03 Aug 2023', 1500),
+                    transaction('Send money', '03 Aug 2023', 1500),
                   ],
                 ),
               ),

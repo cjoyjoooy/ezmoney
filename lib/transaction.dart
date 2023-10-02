@@ -10,7 +10,7 @@ class Transaction extends StatefulWidget {
 }
 
 class _TransactionState extends State<Transaction> {
-  Widget transaction(type, date, name, amount) => Container(
+  Widget transaction(type, date, amount) => Container(
         margin: const EdgeInsets.symmetric(horizontal: 25, vertical: 8),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -18,32 +18,63 @@ class _TransactionState extends State<Transaction> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  type,
-                  style: fontSecondary(secondaryColor(.4), FontWeight.w500),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      type,
+                      style: fontDefault(secondaryColor(1), FontWeight.w500),
+                    ),
+                    Text(
+                      date,
+                      style: fontSecondary(secondaryColor(.4), FontWeight.w500),
+                    ),
+                  ],
                 ),
                 Text(
-                  date,
-                  style: fontSecondary(secondaryColor(.4), FontWeight.w500),
-                ),
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  name,
-                  style: fontDefault(secondaryColor(1), FontWeight.w500),
-                ),
-                Text(
-                  '-\$$amount',
-                  style: fontDefault(secondaryColor(1), FontWeight.w500),
+                  '- $amount',
+                  style: fontTertiary(secondaryColor(1), FontWeight.bold),
                 ),
               ],
             ),
           ],
         ),
       );
+
+  // Widget transaction(type, date, name, amount) => Container(
+  //       margin: const EdgeInsets.symmetric(horizontal: 25, vertical: 8),
+  //       child: Column(
+  //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //         children: [
+  //           Row(
+  //             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //             children: [
+  //               Text(
+  //                 type,
+  //                 style: fontSecondary(secondaryColor(.4), FontWeight.w500),
+  //               ),
+  //               Text(
+  //                 date,
+  //                 style: fontSecondary(secondaryColor(.4), FontWeight.w500),
+  //               ),
+  //             ],
+  //           ),
+  //           Row(
+  //             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //             children: [
+  //               Text(
+  //                 name,
+  //                 style: fontDefault(secondaryColor(1), FontWeight.w500),
+  //               ),
+  //               Text(
+  //                 '-\$$amount',
+  //                 style: fontDefault(secondaryColor(1), FontWeight.w500),
+  //               ),
+  //             ],
+  //           ),
+  //         ],
+  //       ),
+  //     );
 
   @override
   Widget build(BuildContext context) {
@@ -71,26 +102,27 @@ class _TransactionState extends State<Transaction> {
       ),
       body: ListView(
         children: [
-          transaction('Send money to', '03 Aug 2023', 'Feiah Macalde', 3600),
-          transaction('Send money to', '03 Aug 2023', 'Lex Vincent Lao', 500),
-          transaction('Send money to', '03 Aug 2023', 'Lex Vincent Lao', 500),
-          transaction(
-              'Send money to', '15 Sep 2023', 'Celeste Joy Vagilidad', 1500),
-          transaction('Send money to', '03 Aug 2023', 'Feiah Macalde', 3600),
-          transaction('Send money to', '03 Aug 2023', 'Lex Vincent Lao', 500),
-          transaction('Send money to', '03 Aug 2023', 'Lex Vincent Lao', 500),
-          transaction(
-              'Send money to', '15 Sep 2023', 'Celeste Joy Vagilidad', 1500),
-          transaction('Send money to', '03 Aug 2023', 'Feiah Macalde', 3600),
-          transaction('Send money to', '03 Aug 2023', 'Lex Vincent Lao', 500),
-          transaction('Send money to', '03 Aug 2023', 'Lex Vincent Lao', 500),
-          transaction(
-              'Send money to', '15 Sep 2023', 'Celeste Joy Vagilidad', 1500),
-          transaction('Send money to', '03 Aug 2023', 'Feiah Macalde', 3600),
-          transaction('Send money to', '03 Aug 2023', 'Lex Vincent Lao', 500),
-          transaction('Send money to', '03 Aug 2023', 'Lex Vincent Lao', 500),
-          transaction(
-              'Send money to', '15 Sep 2023', 'Celeste Joy Vagilidad', 1500),
+          SizedBox(
+            height: 15,
+          ),
+          transaction('Send money', '03 Aug 2023', 1500),
+          transaction('Send money', '03 Aug 2023', 1500),
+          transaction('Send money', '03 Aug 2023', 1500),
+          transaction('Send money', '03 Aug 2023', 1500),
+          transaction('Send money', '03 Aug 2023', 1500),
+          transaction('Send money', '03 Aug 2023', 1500),
+          transaction('Send money', '03 Aug 2023', 1500),
+          transaction('Send money', '03 Aug 2023', 1500),
+          transaction('Send money', '03 Aug 2023', 1500),
+          transaction('Send money', '03 Aug 2023', 1500),
+          transaction('Send money', '03 Aug 2023', 1500),
+          transaction('Send money', '03 Aug 2023', 1500),
+          transaction('Send money', '03 Aug 2023', 1500),
+          transaction('Send money', '03 Aug 2023', 1500),
+          transaction('Send money', '03 Aug 2023', 1500),
+          transaction('Send money', '03 Aug 2023', 1500),
+          transaction('Send money', '03 Aug 2023', 1500),
+          transaction('Send money', '03 Aug 2023', 1500),
         ],
       ),
     );
