@@ -1,6 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ezmoney/models/buttonStyle.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
+import 'User.dart';
 import 'models/appstyle.dart';
 import 'models/birthdatefield.dart';
 import 'models/combobox.dart';
@@ -17,6 +20,47 @@ class EditProfile extends StatefulWidget {
 
 class _SignUpState extends State<EditProfile> {
   final _formKey = GlobalKey<FormState>();
+
+  Future<void> updateUserProfile({
+    String? firstName,
+    String? lastName,
+    String? birthdate,
+    String? gender,
+    String? address,
+    String? phoneNumber,
+    String? email,
+    String? username,
+  }) async {
+    try {
+      final user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        final userDocRef =
+            FirebaseFirestore.instance.collection('User').doc(user.uid);
+
+        // Create a map of fields to update
+        final Map<String, dynamic> updatedFields = {};
+        if (firstName != null) updatedFields['First Name'] = firstName;
+        if (lastName != null) updatedFields['Last Name'] = lastName;
+        if (birthdate != null) updatedFields['Birthdate'] = birthdate;
+        if (gender != null) updatedFields['Gender'] = gender;
+        if (address != null) updatedFields['Address'] = address;
+        if (phoneNumber != null) updatedFields['Phone Number'] = phoneNumber;
+        if (email != null) updatedFields['Email'] = email;
+        if (username != null) updatedFields['Username'] = username;
+
+        // Update the user document with the provided fields
+        await userDocRef.update(updatedFields);
+
+        // Success message
+        print('User profile updated successfully');
+      } else {
+        print('User not logged in');
+      }
+    } catch (e) {
+      print('Error updating user profile: $e');
+      // Handle error gracefully
+    }
+  }
 
   TextEditingController fnameController = TextEditingController();
   TextEditingController lnameController = TextEditingController();
@@ -191,6 +235,17 @@ class _SignUpState extends State<EditProfile> {
                     btnLabel: "Save",
                     onPressedMethod: () {
                       if (_formKey.currentState!.validate()) {}
+                      updateUserProfile(
+                        firstName: fnameController.text,
+                        lastName: lnameController.text,
+                        birthdate: birthdateController.text,
+                        gender: _selectedGender!,
+                        address: addressController.text,
+                        phoneNumber: phoneNumberController.text,
+                        email: emailController.text,
+                        username: usernameController.text,
+                      );
+                      Navigator.pop(context);
                     },
                   ),
                   const SizedBox(
