@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intl/intl.dart';
 
 import '/banktransferpage.dart';
 import '/billspage.dart';
@@ -19,6 +20,20 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeState extends State<HomeScreen> {
   final user = FirebaseAuth.instance.currentUser!;
+
+  Future<List<DocumentSnapshot>> fetchTransactions() async {
+    try {
+      final querySnapshot = await FirebaseFirestore.instance
+          .collection('Transaction')
+          .orderBy('Date', descending: true)
+          .get();
+
+      return querySnapshot.docs;
+    } catch (e) {
+      print('Error fetching transactions: $e');
+      return []; // Handle error gracefully
+    }
+  }
 
   Future<num> fetchUserBalance(String uid) async {
     try {
@@ -208,7 +223,20 @@ class _HomeState extends State<HomeScreen> {
         ],
       );
 
-  Widget transaction(type, date, amount) => Column(
+  Widget transaction(type, Timestamp date, amount) {
+    final formattedDate = DateFormat('yyyy-MM-dd HH:mm').format(date.toDate());
+    String amountText = amount.toString(); // Convert amount to string initially
+
+    // Check if transactionType is 'Cash In' and modify amountText accordingly
+    if (type == 'Cash in') {
+      amountText = '+ $amountText';
+    } else {
+      amountText = '- $amountText';
+    }
+
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 25, vertical: 8),
+      child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Row(
@@ -222,22 +250,21 @@ class _HomeState extends State<HomeScreen> {
                     style: fontDefault(secondaryColor(1), FontWeight.w500),
                   ),
                   Text(
-                    date,
+                    formattedDate, // Use the formatted date here
                     style: fontSecondary(secondaryColor(.4), FontWeight.w500),
                   ),
                 ],
               ),
               Text(
-                '- $amount',
+                amountText,
                 style: fontTertiary(secondaryColor(1), FontWeight.bold),
               ),
             ],
           ),
-          const SizedBox(
-            height: 10,
-          ),
         ],
-      );
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -304,44 +331,56 @@ class _HomeState extends State<HomeScreen> {
                   color: tertiaryColor(1),
                   borderRadius: BorderRadius.circular(10),
                 ),
-                child: ListView(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "Transactions",
-                          style:
-                              fontTertiary(secondaryColor(1), FontWeight.bold),
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) => CustomTransaction
-                                    .Transaction(), // Use the Transaction widget
+                child: FutureBuilder<List<DocumentSnapshot>>(
+                  future: fetchTransactions(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return CircularProgressIndicator(); // Show a loading indicator while fetching data
+                    } else if (snapshot.hasError) {
+                      return Text('Error: ${snapshot.error}');
+                    } else {
+                      final transactions = snapshot.data ?? [];
+
+                      return ListView(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "Transactions",
+                                style: fontTertiary(
+                                    secondaryColor(1), FontWeight.bold),
                               ),
-                            );
-                          },
-                          child: Text(
-                            "See all",
-                            style:
-                                fontTertiary(accentColor(1), FontWeight.bold),
+                              GestureDetector(
+                                onTap: () {
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          CustomTransaction.Transaction(),
+                                    ),
+                                  );
+                                },
+                                child: Text(
+                                  "See all",
+                                  style: fontTertiary(
+                                      accentColor(1), FontWeight.bold),
+                                ),
+                              ),
+                            ],
                           ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 15,
-                    ),
-                    transaction('Send money', '03 Aug 2023', 1500),
-                    transaction('Send money', '03 Aug 2023', 1500),
-                    transaction('Send money', '03 Aug 2023', 1500),
-                    transaction('Send money', '03 Aug 2023', 1500),
-                    transaction('Send money', '03 Aug 2023', 1500),
-                    transaction('Send money', '03 Aug 2023', 1500),
-                    transaction('Send money', '03 Aug 2023', 1500),
-                  ],
+                          const SizedBox(
+                            height: 15,
+                          ),
+                          for (var doc in transactions)
+                            transaction(
+                              doc['Transaction Type'], // Replace with the actual field names from your Firestore documents
+                              doc['Date'],
+                              doc['Amount'],
+                            ),
+                        ],
+                      );
+                    }
+                  },
                 ),
               ),
             ),
