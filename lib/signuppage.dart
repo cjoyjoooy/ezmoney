@@ -88,6 +88,7 @@ class _SignUpState extends State<SignUp> {
       email: emailController.text.trim(),
       username: usernameController.text.trim(),
       balance: 0,
+      image: '',
     );
 
     final json = newUser.toJson();

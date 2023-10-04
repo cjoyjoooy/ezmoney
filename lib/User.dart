@@ -9,6 +9,7 @@ class Users {
   final String email;
   final String username;
   final double balance;
+  final String image;
 
   Users({
     required this.id,
@@ -21,6 +22,7 @@ class Users {
     required this.email,
     required this.username,
     required this.balance,
+    required this.image,
   });
 
   static Users fromJson(Map<String, dynamic> json) => Users(
@@ -34,6 +36,7 @@ class Users {
         email: json['Email'],
         username: json['Username'],
         balance: json['Balance'],
+        image: json['Image'],
       );
 
   Map<String, dynamic> toJson() => {
@@ -47,5 +50,6 @@ class Users {
         'Email': email,
         'Username': username,
         'Balance': balance,
+        'Image': image,
       };
 }

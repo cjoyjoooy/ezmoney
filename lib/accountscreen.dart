@@ -3,13 +3,13 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ezmoney/models/buttonStyle.dart';
 import 'package:ezmoney/startpage.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import '/profileedit.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
+import 'authenticator.dart';
 import 'models/appstyle.dart';
 
 class AccountScreen extends StatefulWidget {
@@ -43,73 +43,6 @@ class _AccountScreenState extends State<AccountScreen> {
 
         var userData = snapshot.data!.data() as Map<String, dynamic>;
 
-        PlatformFile? pickedFile;
-        UploadTask? uploadTask;
-
-        Future selectFile() async {
-          final result = await FilePicker.platform.pickFiles();
-          if (result == null) return;
-
-          setState(() {
-            pickedFile = result.files.first;
-          });
-        }
-
-        Future uploadFile() async {
-          if (pickedFile == null) {
-            // Handle the case where no file is selected
-            print('No file selected');
-            return;
-          }
-
-          final path = 'images/${pickedFile!.name}';
-          final file = File(pickedFile!.path!);
-
-          final ref = FirebaseStorage.instance.ref().child(path);
-          setState(() {
-            uploadTask = ref.putFile(file);
-          });
-
-          final snapshot = await uploadTask!.whenComplete(() {});
-
-          final urlDownload = await snapshot.ref.getDownloadURL();
-          print('Download Link: $urlDownload');
-
-          setState(() {
-            uploadTask = null;
-          });
-        }
-
-        Widget buildProgress() => StreamBuilder<TaskSnapshot>(
-            stream: uploadTask?.snapshotEvents,
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                final data = snapshot.data!;
-                double progress = data.bytesTransferred / data.totalBytes;
-
-                return SizedBox(
-                  height: 50,
-                  child: Stack(
-                    fit: StackFit.expand,
-                    children: [
-                      LinearProgressIndicator(
-                        value: progress,
-                        backgroundColor: Colors.grey,
-                        color: Colors.green,
-                      ),
-                      Center(
-                        child: Text('${(100 * progress).roundToDouble()}%'),
-                      )
-                    ],
-                  ),
-                );
-              } else {
-                return const SizedBox(
-                  height: 50,
-                );
-              }
-            });
-
         return Container(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
           child: ListView(
@@ -122,26 +55,11 @@ class _AccountScreenState extends State<AccountScreen> {
                     size: 85,
                     color: Color.fromRGBO(250, 250, 250, 1),
                   ),
-                  ElevatedButton.icon(
-                    onPressed: () {
-                      selectFile();
-                    },
-                    icon: const Icon(Icons.add_a_photo_outlined),
-                    label: const Text(
-                      'Select File',
-                    ),
+                  const Icon(
+                    Icons.add_a_photo_outlined,
+                    size: 20,
+                    color: Color.fromRGBO(250, 250, 250, 1),
                   ),
-                  ElevatedButton.icon(
-                    onPressed: () {
-                      uploadFile();
-                    },
-                    icon: const Icon(Icons.add_a_photo_outlined),
-                    label: const Text(
-                      'Upload File',
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  buildProgress(),
                   Text(
                     '${userData['First Name']} ${userData['Last Name']}',
                     style: fontDefault(
@@ -300,18 +218,24 @@ class _AccountScreenState extends State<AccountScreen> {
           automaticallyImplyLeading: false,
           actions: [
             Container(
-              padding: const EdgeInsets.only(right: 10),
-              child: IconButton(
-                onPressed: () {
-                  FirebaseAuth.instance.signOut();
-                },
-                icon: Icon(
-                  Icons.logout,
-                  size: 32,
-                  color: secondaryColor(1),
-                ),
-              ),
-            )
+                padding: const EdgeInsets.only(right: 10),
+                child: IconButton(
+                  onPressed: () {
+                    FirebaseAuth.instance.signOut().then((_) {
+                      Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(
+                            builder: (context) => Authenticator()),
+                      );
+                    }).catchError((error) {
+                      print("Error during logout: $error");
+                    });
+                  },
+                  icon: Icon(
+                    Icons.logout,
+                    size: 32,
+                    color: secondaryColor(1),
+                  ),
+                ))
           ],
         ),
         body: accountProfile(user),
