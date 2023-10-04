@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'models/appstyle.dart';
@@ -81,8 +82,10 @@ class _TransactionState extends State<Transaction> {
       body: StreamBuilder(
         stream: FirebaseFirestore.instance
             .collection('Transaction')
-            .orderBy('Date',
-                descending: true) // Order by 'Date' field in descending order
+            .where('Email',
+                isEqualTo: FirebaseAuth.instance.currentUser
+                    ?.email) // Use currentUser?.email to access the user's email
+            .orderBy('Date', descending: true)
             .snapshots(),
         builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {

@@ -25,6 +25,7 @@ class _HomeState extends State<HomeScreen> {
     try {
       final querySnapshot = await FirebaseFirestore.instance
           .collection('Transaction')
+          .where('Email', isEqualTo: FirebaseAuth.instance.currentUser?.email)
           .orderBy('Date', descending: true)
           .get();
 
