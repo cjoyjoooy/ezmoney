@@ -28,6 +28,29 @@ class ConfirmTransactionPage extends StatefulWidget {
 }
 
 class _ConfirmTransactionPageState extends State<ConfirmTransactionPage> {
+  bool isTransactionValid = true;
+
+  // Function to show an error dialog
+  void showErrorDialog(String message) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Error'),
+          content: Text(message),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   String _getTransactionButton(String transactionType) {
     final labelMap = {
       "Send": "Send Money",
@@ -196,6 +219,16 @@ class _ConfirmTransactionPageState extends State<ConfirmTransactionPage> {
                       newBalance = currentBalance + enteredAmount;
                     } else {
                       newBalance = currentBalance - enteredAmount;
+                    }
+
+                    // Check if the newBalance is negative and show an error dialog
+                    if (newBalance < 0) {
+                      setState(() {
+                        isTransactionValid = false;
+                      });
+                      showErrorDialog(
+                          'Cannot proceed as subtracted amount is higher than balance');
+                      return; // Cancel the transaction
                     }
 
                     // Call updateBalanceCallback with the calculated newBalance

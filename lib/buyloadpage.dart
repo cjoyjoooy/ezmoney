@@ -43,7 +43,7 @@ class _BuyLoadPageState extends State<BuyLoadPage> {
       try {
         await FirebaseFirestore.instance
             .collection('Transaction')
-            .doc()
+            .doc(user.uid) // Use the user's UID as the document ID
             .set(json);
       } catch (e) {
         print('Error creating Load transaction: $e');
