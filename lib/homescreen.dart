@@ -236,7 +236,7 @@ class _HomeState extends State<HomeScreen> {
     }
 
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 25, vertical: 8),
+      margin: const EdgeInsets.symmetric(vertical: 5),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -276,13 +276,13 @@ class _HomeState extends State<HomeScreen> {
         backgroundColor: Colors.transparent,
         title: Row(
           children: [
-            SizedBox(
+            const SizedBox(
               width: 10,
             ),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(
+                const SizedBox(
                   height: 10,
                 ),
                 Text(
