@@ -204,13 +204,11 @@ class _ProfilePictureState extends State<ProfilePicture> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
   }
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
   }
 
@@ -238,7 +236,7 @@ class _ProfilePictureState extends State<ProfilePicture> {
         elevation: 0,
       ),
       body: Container(
-        margin: EdgeInsets.all(20),
+        margin: const EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
@@ -265,7 +263,7 @@ class _ProfilePictureState extends State<ProfilePicture> {
                 selectFile();
               },
             ),
-            SizedBox(
+            const SizedBox(
               height: 20,
             ),
             Button3(
