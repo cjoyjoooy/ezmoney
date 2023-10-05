@@ -1,14 +1,10 @@
-import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ezmoney/models/buttonStyle.dart';
+import 'package:ezmoney/profilepic.dart';
 import 'package:ezmoney/startpage.dart';
-import 'package:firebase_storage/firebase_storage.dart';
-import 'package:image_picker/image_picker.dart';
 import '/profileedit.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
 import 'authenticator.dart';
 import 'models/appstyle.dart';
 
@@ -37,12 +33,10 @@ class _AccountScreenState extends State<AccountScreen> {
         }
 
         if (!snapshot.hasData || !snapshot.data!.exists) {
-          return Text(
+          return const Text(
               "User not found"); // Handle the case where the user document does not exist.
         }
-
         var userData = snapshot.data!.data() as Map<String, dynamic>;
-
         return Container(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
           child: ListView(
@@ -50,15 +44,42 @@ class _AccountScreenState extends State<AccountScreen> {
             children: [
               Column(
                 children: [
-                  const Icon(
-                    Icons.account_circle_outlined,
-                    size: 85,
-                    color: Color.fromRGBO(250, 250, 250, 1),
+                  Stack(
+                    children: [
+                      if (userData['Image'] != null &&
+                          userData['Image'].isNotEmpty)
+                        CircleAvatar(
+                          backgroundImage: NetworkImage(userData['Image']),
+                          radius: 40,
+                        )
+                      else
+                        const Icon(
+                          Icons.account_circle_outlined,
+                          size: 85,
+                          color: Color.fromRGBO(250, 250, 250, 1),
+                        ),
+                      Positioned(
+                        bottom: -3,
+                        right: 0,
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => ProfilePicture(),
+                              ),
+                            );
+                          },
+                          child: const Icon(
+                            Icons.add_a_photo_outlined,
+                            size: 28,
+                            color: Color.fromRGBO(250, 250, 250, 1),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                  const Icon(
-                    Icons.add_a_photo_outlined,
-                    size: 20,
-                    color: Color.fromRGBO(250, 250, 250, 1),
+                  SizedBox(
+                    height: 10,
                   ),
                   Text(
                     '${userData['First Name']} ${userData['Last Name']}',
@@ -324,9 +345,6 @@ class _AccountScreenState extends State<AccountScreen> {
                     'Delete Account',
                     style: fontTertiary(deleteColor(1), FontWeight.bold),
                   ),
-                ),
-                const SizedBox(
-                  height: 10,
                 ),
               ],
             ),
