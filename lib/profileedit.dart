@@ -236,18 +236,19 @@ class _SignUpState extends State<EditProfile> {
             child: Button(
               btnLabel: "Save",
               onPressedMethod: () {
-                if (_formKey.currentState!.validate()) {}
-                updateUserProfile(
-                  firstName: fnameController.text,
-                  lastName: lnameController.text,
-                  birthdate: birthdateController.text,
-                  gender: _selectedGender!,
-                  address: addressController.text,
-                  phoneNumber: phoneNumberController.text,
-                  email: emailController.text,
-                  username: usernameController.text,
-                );
-                Navigator.pop(context);
+                if (_formKey.currentState!.validate()) {
+                  updateUserProfile(
+                    firstName: fnameController.text,
+                    lastName: lnameController.text,
+                    birthdate: birthdateController.text,
+                    gender: _selectedGender!,
+                    address: addressController.text,
+                    phoneNumber: phoneNumberController.text,
+                    email: emailController.text,
+                    username: usernameController.text,
+                  );
+                  Navigator.pop(context);
+                }
               },
             ),
           ),
