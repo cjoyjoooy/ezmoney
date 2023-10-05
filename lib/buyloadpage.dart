@@ -190,7 +190,7 @@ class _BuyLoadPageState extends State<BuyLoadPage> {
                         transactionType: "Load",
                         createTransferCallback: createLoad,
                         updateBalanceCallback: updateBalance,
-                        name: '',
+                        name: phonenumberController.text,
                         amount: amountController.text,
                       ),
                     ),
