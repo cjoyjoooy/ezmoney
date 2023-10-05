@@ -55,6 +55,7 @@ class _CashInState extends State<CashIn> {
         network: '',
         accountname: '',
         date: DateTime.now(),
+        id: user.uid,
       );
 
       final json = newCashin.toJson();

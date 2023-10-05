@@ -26,7 +26,7 @@ class _BuyLoadPageState extends State<BuyLoadPage> {
   Future createLoad() async {
     final user = FirebaseAuth.instance.currentUser;
     if (user != null) {
-      final newCashin = UserTransaction(
+      final newLoad = UserTransaction(
         email: user.email ?? 'Unknown',
         transactiontype: 'Load',
         bank: '',
@@ -35,17 +35,18 @@ class _BuyLoadPageState extends State<BuyLoadPage> {
         network: _selectedNetwork!,
         accountname: '',
         date: DateTime.now(),
+        id: user.uid,
       );
 
-      final json = newCashin.toJson();
+      final json = newLoad.toJson();
 
       try {
         await FirebaseFirestore.instance
             .collection('Transaction')
-            .doc() // Firestore will auto-generate a unique document ID
+            .doc()
             .set(json);
       } catch (e) {
-        print('Error creating Cash In transaction: $e');
+        print('Error creating Load transaction: $e');
         // Handle error gracefully
       }
     }

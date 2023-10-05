@@ -57,6 +57,26 @@ class _SignUpState extends State<SignUp> {
     }
   }
 
+  void _showErrorDialog(String message) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text("Error"),
+          content: Text(message),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text("OK"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   void initState() {
     super.initState();
@@ -65,12 +85,21 @@ class _SignUpState extends State<SignUp> {
     _selectedGender = _genderList[0];
   }
 
-  Future signUpUser() async {
-    await FirebaseAuth.instance.createUserWithEmailAndPassword(
-      email: emailController.text.trim(),
-      password: passwordController.text.trim(),
-    );
-    addUserData();
+  Future<void> signUpUser() async {
+    if (passwordController.text.trim().length < 6) {
+      _showErrorDialog("Password must be at least 6 characters long.");
+      return;
+    }
+
+    try {
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: emailController.text.trim(),
+        password: passwordController.text.trim(),
+      );
+      addUserData();
+    } catch (error) {
+      _showErrorDialog("An error occurred during sign-up: $error");
+    }
   }
 
   Future addUserData() async {

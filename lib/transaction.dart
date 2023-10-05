@@ -82,9 +82,9 @@ class _TransactionState extends State<Transaction> {
       body: StreamBuilder(
         stream: FirebaseFirestore.instance
             .collection('Transaction')
-            .where('Email',
+            .where('id', // Change 'Email' to 'id'
                 isEqualTo: FirebaseAuth.instance.currentUser
-                    ?.email) // Use currentUser?.email to access the user's email
+                    ?.uid) // Use currentUser?.uid to access the user's UID
             .orderBy('Date', descending: true)
             .snapshots(),
         builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {

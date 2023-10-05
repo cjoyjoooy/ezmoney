@@ -280,7 +280,9 @@ class _AccountScreenState extends State<AccountScreen> {
                 ),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.transparent, elevation: 0),
+                    backgroundColor: Colors.transparent,
+                    elevation: 0,
+                  ),
                   onPressed: () async {
                     // Show a confirmation dialog
                     bool confirmDelete = await showDialog(
@@ -338,6 +340,11 @@ class _AccountScreenState extends State<AccountScreen> {
                       } catch (e) {
                         print('Error deleting account: $e');
                         // Handle error, show a snackbar, or display an error message to the user.
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('Error deleting account: $e'),
+                          ),
+                        );
                       }
                     }
                   },

@@ -7,6 +7,7 @@ class UserTransaction {
   final String network;
   final String accountname;
   final DateTime date;
+  final String id;
 
   UserTransaction({
     required this.email,
@@ -17,17 +18,20 @@ class UserTransaction {
     required this.network,
     required this.accountname,
     required this.date,
+    required this.id,
   });
 
   static UserTransaction fromJson(Map<String, dynamic> json) => UserTransaction(
-      email: json['Email'],
-      transactiontype: json['Transaction Type'],
-      bank: json['Bank'],
-      accountnumber: json['Account Number'],
-      amount: json['Amount'],
-      network: json['Network'],
-      accountname: json['Account Name'],
-      date: json['Date']);
+        email: json['Email'],
+        transactiontype: json['Transaction Type'],
+        bank: json['Bank'],
+        accountnumber: json['Account Number'],
+        amount: json['Amount'],
+        network: json['Network'],
+        accountname: json['Account Name'],
+        date: json['Date'],
+        id: json['id'],
+      );
 
   Map<String, dynamic> toJson() => {
         'Email': email,
@@ -38,5 +42,6 @@ class UserTransaction {
         'Network': network,
         'Account Name': accountname,
         'Date': date,
+        'id': id,
       };
 }

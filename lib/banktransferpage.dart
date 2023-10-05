@@ -26,7 +26,7 @@ class _BankTransferPageState extends State<BankTransferPage> {
   Future createTransfer() async {
     final user = FirebaseAuth.instance.currentUser;
     if (user != null && _selectedBank != null) {
-      final newCashin = UserTransaction(
+      final newTransfer = UserTransaction(
         email: user.email ?? 'Unknown',
         transactiontype: 'Bank Transfer',
         bank: _selectedBank!,
@@ -35,14 +35,16 @@ class _BankTransferPageState extends State<BankTransferPage> {
         network: '',
         accountname: accountnameController.text,
         date: DateTime.now(),
+        id: user.uid, // Set the UID here
       );
 
-      final json = newCashin.toJson();
+      final json = newTransfer.toJson();
 
       try {
         await FirebaseFirestore.instance
             .collection('Transaction')
-            .add(json); // Firestore will auto-generate a unique document ID
+            .doc()
+            .set(json);
       } catch (e) {
         print('Error creating Bank Transfer transaction: $e');
         // Handle error gracefully

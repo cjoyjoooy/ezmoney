@@ -29,7 +29,7 @@ class _SendMoneyPageState extends State<SendMoneyPage> {
   Future createSend() async {
     final user = FirebaseAuth.instance.currentUser;
     if (user != null) {
-      final newCashin = UserTransaction(
+      final newSend = UserTransaction(
         email: user.email ?? 'Unknown',
         transactiontype: 'Send Money',
         bank: '',
@@ -38,17 +38,18 @@ class _SendMoneyPageState extends State<SendMoneyPage> {
         network: '',
         accountname: nameController.text,
         date: DateTime.now(),
+        id: user.uid, // Set the UID here
       );
 
-      final json = newCashin.toJson();
+      final json = newSend.toJson();
 
       try {
         await FirebaseFirestore.instance
             .collection('Transaction')
-            .doc() // Firestore will auto-generate a unique document ID
+            .doc()
             .set(json);
       } catch (e) {
-        print('Error creating Cash In transaction: $e');
+        print('Error creating Send Money transaction: $e');
         // Handle error gracefully
       }
     }
